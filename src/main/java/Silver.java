@@ -31,6 +31,9 @@ public class Silver {
             case "add":
                 addTask(scanner);
                 break;
+            case "delete":
+                deleteTask(scanner);
+                break;
             case "mark":
                 mark(scanner);
                 break;
@@ -65,7 +68,7 @@ public class Silver {
             if (desc.isEmpty()) {
                 throw new IllegalArgumentException("Task description cannot be empty.");
             }
-            printIndented(responseIndent, "What kind of task do you want to add?");
+            printIndented(responseIndent, "And what type of task is this? (todo/deadline/event)");
             printIndentedSingle(responseIndent, "> ");
             String taskType = scanner.nextLine();
             switch (taskType) {
@@ -106,6 +109,25 @@ public class Silver {
         }
         printIndented(responseIndent, "Understood. I've added this task:\n> " + tasks.get(taskCounter).getDescription());
         taskCounter++;
+    }
+
+    static void deleteTask(Scanner scanner) {
+        printIndented(responseIndent, "Which task number do you want to delete?");
+        printIndentedSingle(responseIndent, "> ");
+        int taskNum = 0;
+        try{
+            taskNum = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e){
+            printIndented(responseIndent, "Please enter a valid task number.");
+            return;
+        }
+        if (taskNum < 1 || taskNum > taskCounter) {
+            printIndented(responseIndent, "No such task found.");
+            return;
+        }
+        Task removedTask = tasks.remove(taskNum - 1);
+        taskCounter--;
+        printIndented(responseIndent, "Deleted task " + taskNum + ": " + removedTask.getDescription());
     }
 
     static void bye() {
