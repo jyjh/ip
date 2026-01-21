@@ -80,7 +80,7 @@ public class Silver {
             return;
         }
         tasks[taskNum - 1].mark();
-        printIndented(responseIndent, "Marked task " + taskNum + ": " + tasks[taskNum - 1] + " as done.");
+        printIndented(responseIndent, "Marked task " + taskNum + ": " + tasks[taskNum - 1].getDescription() + " as done.");
     }
 
     static void unmark() {
@@ -92,7 +92,7 @@ public class Silver {
             return;
         }
         tasks[taskNum - 1].unmark();
-        printIndented(responseIndent, "Unmarked task " + taskNum + ": " + tasks[taskNum - 1] + " as done.");
+        printIndented(responseIndent, "Unmarked task " + taskNum + ": " + tasks[taskNum - 1].getDescription() + " as done.");
     }
 
     static void list() {
@@ -103,7 +103,7 @@ public class Silver {
         printIndented(responseIndent, hString);
         for (int i = 0; i < taskCounter; i++) {
             printIndented(responseIndent, 
-                (i + 1) + ". " + (tasks[i].isDone() ? "[X]" : "[]") + " " + tasks[i]);
+                (i + 1) + ". " + tasks[i]);
         }
         printIndented(responseIndent, hString);
     }
