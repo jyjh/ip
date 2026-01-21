@@ -1,7 +1,41 @@
-Hello. I'm
+Hello. I'm 
  ____  _ _                
 / ___|(_) |_   _____ _ __ 
 \___ \| | \ \ / / _ \ '__|
  ___) | | |\ V /  __/ |   
 |____/|_|_| \_/ \___|_|   
-
+____________________________________________________________
+What can I do for you today?
+	What kind of task do you want to add?
+	> 	Enter the description of the ToDo task:
+	> 	Understood. I've added this task:
+	> b
+	What kind of task do you want to add?
+	> 	Enter the description of the ToDo task:
+	> 	Understood. I've added this task:
+	> b
+	What kind of task do you want to add?
+	> 	Enter the description of the Deadline task:
+	> 	Enter the due date/time (by):
+	> 	Understood. I've added this task:
+	> c
+	What kind of task do you want to add?
+	> 	Enter the description of the Event task:
+	> 	Enter the start date/time (from):
+	> 	Enter the end date/time (to):
+	> 	Understood. I've added this task:
+	> h
+	Which task number do you want to mark as done?
+	> 	Marked task 1: b as done.
+	____________________________________________________________
+	1. [T][X] b
+	2. [T][ ] b
+	3. [D][ ] c (by: d)
+	4. [E][ ] h (from: j to: list)
+	____________________________________________________________
+	Which task number do you want to mark as done?
+	> 	Marked task 2: b as done.
+	I'm sorry, I don't understand that command. Please try again.
+	Which task number do you want to unmark as done?
+	> 	Unmarked task 2: b as done.
+	Farewell. Until next time.

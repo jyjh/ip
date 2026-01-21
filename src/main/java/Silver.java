@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Silver {
 
@@ -18,22 +19,23 @@ public class Silver {
         System.out.println("Hello. I'm \n" + logo);
         System.out.println(hString);
         System.out.println("What can I do for you today?");
-        while (input()){
+        Scanner scanner = new Scanner(System.in);
+        while (input(scanner)){
         }
 
     }
 
-    static boolean input() {
-        String userInput = System.console().readLine();
+    static boolean input(Scanner scanner) {
+        String userInput = scanner.nextLine();
         switch (userInput) {
             case "add":
-                addTask();
+                addTask(scanner);
                 break;
             case "mark":
-                mark();
+                mark(scanner);
                 break;
             case "unmark":
-                unmark();
+                unmark(scanner);
                 break;
             case "list":
                 list();
@@ -51,42 +53,45 @@ public class Silver {
         return true;
     }
 
-    static void addTask() {
+    static void addTask(Scanner scanner) {
         if (taskCounter >= maxTasks) {
             printIndented(responseIndent, "Task list is full. Cannot add more tasks.");
             return;
         }
         printIndented(responseIndent, "What kind of task do you want to add?");
         printIndentedSingle(responseIndent, "> ");
-        String taskType = System.console().readLine();
+        String taskType = scanner.nextLine();
         switch (taskType) {
             case "todo":
                 printIndented(responseIndent, "Enter the description of the ToDo task:");
                 printIndentedSingle(responseIndent, "> ");
-                String todoDesc = System.console().readLine();
+                String todoDesc = scanner.nextLine();
                 tasks.add(new Todo(todoDesc));
                 break;
             case "deadline":
                 printIndented(responseIndent, "Enter the description of the Deadline task:");
                 printIndentedSingle(responseIndent, "> ");
-                String deadlineDesc = System.console().readLine();
+                String deadlineDesc = scanner.nextLine();
                 printIndented(responseIndent, "Enter the due date/time (by):");
                 printIndentedSingle(responseIndent, "> ");
-                String by = System.console().readLine();
+                String by = scanner.nextLine();
                 tasks.add(new Deadline(deadlineDesc, by));
                 break;
             case "event":
                 printIndented(responseIndent, "Enter the description of the Event task:");
                 printIndentedSingle(responseIndent, "> ");
-                String eventDesc = System.console().readLine();
+                String eventDesc = scanner.nextLine();
                 printIndented(responseIndent, "Enter the start date/time (from):");
                 printIndentedSingle(responseIndent, "> ");
-                String from = System.console().readLine();
+                String from = scanner.nextLine();
                 printIndented(responseIndent, "Enter the end date/time (to):");
                 printIndentedSingle(responseIndent, "> ");
-                String to = System.console().readLine();
+                String to = scanner.nextLine();
                 tasks.add(new Events(eventDesc, from, to));
                 break;
+            default:
+                printIndented(responseIndent, "Unknown task type. Please use 'todo', 'deadline', or 'event'.");
+                return;
         }
         printIndented(responseIndent, "Understood. I've added this task:\n> " + tasks.get(taskCounter).getDescription());
         taskCounter++;
@@ -104,10 +109,10 @@ public class Silver {
         printIndented(responseIndent, "blah");
     }
 
-    static void mark() {
+    static void mark(Scanner scanner) {
         printIndented(responseIndent, "Which task number do you want to mark as done?");
         printIndentedSingle(responseIndent, "> ");
-        int taskNum = Integer.parseInt(System.console().readLine());
+        int taskNum = Integer.parseInt(scanner.nextLine());
         if (taskNum < 1 || taskNum > taskCounter) {
             printIndented(responseIndent, "Invalid task number.");
             return;
@@ -116,10 +121,10 @@ public class Silver {
         printIndented(responseIndent, "Marked task " + taskNum + ": " + tasks.get(taskNum - 1).getDescription() + " as done.");
     }
 
-    static void unmark() {
+    static void unmark(Scanner scanner) {
         printIndented(responseIndent, "Which task number do you want to unmark as done?");
         printIndentedSingle(responseIndent, "> ");
-        int taskNum = Integer.parseInt(System.console().readLine());
+        int taskNum = Integer.parseInt(scanner.nextLine());
         if (taskNum < 1 || taskNum > taskCounter) {
             printIndented(responseIndent, "Invalid task number.");
             return;

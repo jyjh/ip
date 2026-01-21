@@ -1,0 +1,24 @@
+add
+todo
+b
+add
+todo
+b
+add
+deadline
+c
+d
+add
+event
+h
+j
+list
+mark
+1
+list
+mark
+2
+unmark 2
+unmark
+2
+bye
