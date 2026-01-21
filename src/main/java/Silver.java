@@ -1,7 +1,7 @@
 public class Silver {
 
     static final int responseIndent = 1;
-    static String[] tasks = new String[100];
+    static Task[] tasks = new Task[100];
     static int taskCounter = 0;
     static String hString = "____________________________________________________________";
     public static void main(String[] args) {
@@ -24,6 +24,12 @@ public class Silver {
         switch (userInput) {
             case "add":
                 addTask(userInput);
+                break;
+            case "mark":
+                mark();
+                break;
+            case "unmark":
+                unmark();
                 break;
             case "list":
                 list();
@@ -48,7 +54,7 @@ public class Silver {
         }
         printIndented(responseIndent, "What task do you want to add?");
         printIndentedSingle(responseIndent, "> ");
-        tasks[taskCounter] = System.console().readLine();
+        tasks[taskCounter] = new Task(System.console().readLine());
         printIndented(responseIndent, "Understood. I've added this task:\n> " + tasks[taskCounter]);
         taskCounter++;
     }
@@ -65,6 +71,30 @@ public class Silver {
         printIndented(responseIndent, "blah");
     }
 
+    static void mark() {
+        printIndented(responseIndent, "Which task number do you want to mark as done?");
+        printIndentedSingle(responseIndent, "> ");
+        int taskNum = Integer.parseInt(System.console().readLine());
+        if (taskNum < 1 || taskNum > taskCounter) {
+            printIndented(responseIndent, "Invalid task number.");
+            return;
+        }
+        tasks[taskNum - 1].mark();
+        printIndented(responseIndent, "Marked task " + taskNum + ": " + tasks[taskNum - 1] + " as done.");
+    }
+
+    static void unmark() {
+        printIndented(responseIndent, "Which task number do you want to unmark as done?");
+        printIndentedSingle(responseIndent, "> ");
+        int taskNum = Integer.parseInt(System.console().readLine());
+        if (taskNum < 1 || taskNum > taskCounter) {
+            printIndented(responseIndent, "Invalid task number.");
+            return;
+        }
+        tasks[taskNum - 1].unmark();
+        printIndented(responseIndent, "Unmarked task " + taskNum + ": " + tasks[taskNum - 1] + " as done.");
+    }
+
     static void list() {
         if (taskCounter == 0) {
             printIndented(responseIndent, "Your task list is empty.");
@@ -72,7 +102,8 @@ public class Silver {
         }
         printIndented(responseIndent, hString);
         for (int i = 0; i < taskCounter; i++) {
-            printIndented(responseIndent, (i + 1) + ". " + tasks[i]);
+            printIndented(responseIndent, 
+                (i + 1) + ". " + (tasks[i].isDone() ? "[X]" : "[]") + " " + tasks[i]);
         }
         printIndented(responseIndent, hString);
     }
