@@ -58,40 +58,51 @@ public class Silver {
             printIndented(responseIndent, "Task list is full. Cannot add more tasks.");
             return;
         }
-        printIndented(responseIndent, "What kind of task do you want to add?");
-        printIndentedSingle(responseIndent, "> ");
-        String taskType = scanner.nextLine();
-        switch (taskType) {
-            case "todo":
-                printIndented(responseIndent, "Enter the description of the ToDo task:");
-                printIndentedSingle(responseIndent, "> ");
-                String todoDesc = scanner.nextLine();
-                tasks.add(new Todo(todoDesc));
-                break;
-            case "deadline":
-                printIndented(responseIndent, "Enter the description of the Deadline task:");
-                printIndentedSingle(responseIndent, "> ");
-                String deadlineDesc = scanner.nextLine();
-                printIndented(responseIndent, "Enter the due date/time (by):");
-                printIndentedSingle(responseIndent, "> ");
-                String by = scanner.nextLine();
-                tasks.add(new Deadline(deadlineDesc, by));
-                break;
-            case "event":
-                printIndented(responseIndent, "Enter the description of the Event task:");
-                printIndentedSingle(responseIndent, "> ");
-                String eventDesc = scanner.nextLine();
-                printIndented(responseIndent, "Enter the start date/time (from):");
-                printIndentedSingle(responseIndent, "> ");
-                String from = scanner.nextLine();
-                printIndented(responseIndent, "Enter the end date/time (to):");
-                printIndentedSingle(responseIndent, "> ");
-                String to = scanner.nextLine();
-                tasks.add(new Events(eventDesc, from, to));
-                break;
-            default:
-                printIndented(responseIndent, "Unknown task type. Please use 'todo', 'deadline', or 'event'.");
-                return;
+        try {
+            printIndented(responseIndent, "Enter the task description:");
+            printIndentedSingle(responseIndent, "> ");
+            String desc = scanner.nextLine();
+            if (desc.isEmpty()) {
+                throw new IllegalArgumentException("Task description cannot be empty.");
+            }
+            printIndented(responseIndent, "What kind of task do you want to add?");
+            printIndentedSingle(responseIndent, "> ");
+            String taskType = scanner.nextLine();
+            switch (taskType) {
+                case "todo":
+                    tasks.add(new Todo(desc));
+                    break;
+                case "deadline":
+                    printIndented(responseIndent, "Enter the due date/time (by):");
+                    printIndentedSingle(responseIndent, "> ");
+                    String by = scanner.nextLine();
+                    if (by.isEmpty()) {
+                        throw new IllegalArgumentException("Deadline 'by' field cannot be empty.");
+                    }
+                    tasks.add(new Deadline(desc, by));
+                    break;
+                case "event":
+                    printIndented(responseIndent, "Enter the start date/time (from):");
+                    printIndentedSingle(responseIndent, "> ");
+                    String from = scanner.nextLine();
+                    if (from.isEmpty()) {
+                        throw new IllegalArgumentException("Event 'from' field cannot be empty.");
+                    }
+                    printIndented(responseIndent, "Enter the end date/time (to):");
+                    printIndentedSingle(responseIndent, "> ");
+                    String to = scanner.nextLine();
+                    if (to.isEmpty()) {
+                        throw new IllegalArgumentException("Event 'to' field cannot be empty.");
+                    }
+                    tasks.add(new Events(desc, from, to));
+                    break;
+                default:
+                    printIndented(responseIndent, "Unknown task type. Please use 'todo', 'deadline', or 'event'.");
+                    return;
+            }
+        } catch (IllegalArgumentException e) {
+            printIndented(responseIndent, e.getMessage());
+            return;
         }
         printIndented(responseIndent, "Understood. I've added this task:\n> " + tasks.get(taskCounter).getDescription());
         taskCounter++;
@@ -106,15 +117,21 @@ public class Silver {
     }
 
     static void blah() {
-        printIndented(responseIndent, "blah");
+        printIndented(responseIndent, "Enter an actual command next time, please.");
     }
 
     static void mark(Scanner scanner) {
         printIndented(responseIndent, "Which task number do you want to mark as done?");
         printIndentedSingle(responseIndent, "> ");
-        int taskNum = Integer.parseInt(scanner.nextLine());
+        int taskNum = 0;
+        try{
+            taskNum = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e){
+            printIndented(responseIndent, "Please enter a valid task number.");
+            return;
+        }
         if (taskNum < 1 || taskNum > taskCounter) {
-            printIndented(responseIndent, "Invalid task number.");
+            printIndented(responseIndent, "No such task found.");
             return;
         }
         tasks.get(taskNum - 1).mark();
@@ -124,9 +141,15 @@ public class Silver {
     static void unmark(Scanner scanner) {
         printIndented(responseIndent, "Which task number do you want to unmark as done?");
         printIndentedSingle(responseIndent, "> ");
-        int taskNum = Integer.parseInt(scanner.nextLine());
+        int taskNum = 0;
+        try{
+            taskNum = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e){
+            printIndented(responseIndent, "Please enter a valid task number.");
+            return;
+        }
         if (taskNum < 1 || taskNum > taskCounter) {
-            printIndented(responseIndent, "Invalid task number.");
+            printIndented(responseIndent, "No such task found.");
             return;
         }
         tasks.get(taskNum - 1).unmark();
