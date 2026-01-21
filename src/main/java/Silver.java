@@ -1,7 +1,11 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Silver {
 
     static final int responseIndent = 1;
-    static Task[] tasks = new Task[100];
+    static final int maxTasks = 100;        
+    static List<Task> tasks = new ArrayList<>();
     static int taskCounter = 0;
     static String hString = "____________________________________________________________";
     public static void main(String[] args) {
@@ -23,7 +27,7 @@ public class Silver {
         String userInput = System.console().readLine();
         switch (userInput) {
             case "add":
-                addTask(userInput);
+                addTask();
                 break;
             case "mark":
                 mark();
@@ -47,15 +51,44 @@ public class Silver {
         return true;
     }
 
-    static void addTask(String task) {
-        if (taskCounter >= tasks.length) {
+    static void addTask() {
+        if (taskCounter >= maxTasks) {
             printIndented(responseIndent, "Task list is full. Cannot add more tasks.");
             return;
         }
-        printIndented(responseIndent, "What task do you want to add?");
+        printIndented(responseIndent, "What kind of task do you want to add?");
         printIndentedSingle(responseIndent, "> ");
-        tasks[taskCounter] = new Task(System.console().readLine());
-        printIndented(responseIndent, "Understood. I've added this task:\n> " + tasks[taskCounter]);
+        String taskType = System.console().readLine();
+        switch (taskType) {
+            case "todo":
+                printIndented(responseIndent, "Enter the description of the ToDo task:");
+                printIndentedSingle(responseIndent, "> ");
+                String todoDesc = System.console().readLine();
+                tasks.add(new Todo(todoDesc));
+                break;
+            case "deadline":
+                printIndented(responseIndent, "Enter the description of the Deadline task:");
+                printIndentedSingle(responseIndent, "> ");
+                String deadlineDesc = System.console().readLine();
+                printIndented(responseIndent, "Enter the due date/time (by):");
+                printIndentedSingle(responseIndent, "> ");
+                String by = System.console().readLine();
+                tasks.add(new Deadline(deadlineDesc, by));
+                break;
+            case "event":
+                printIndented(responseIndent, "Enter the description of the Event task:");
+                printIndentedSingle(responseIndent, "> ");
+                String eventDesc = System.console().readLine();
+                printIndented(responseIndent, "Enter the start date/time (from):");
+                printIndentedSingle(responseIndent, "> ");
+                String from = System.console().readLine();
+                printIndented(responseIndent, "Enter the end date/time (to):");
+                printIndentedSingle(responseIndent, "> ");
+                String to = System.console().readLine();
+                tasks.add(new Events(eventDesc, from, to));
+                break;
+        }
+        printIndented(responseIndent, "Understood. I've added this task:\n> " + tasks.get(taskCounter).getDescription());
         taskCounter++;
     }
 
@@ -79,8 +112,8 @@ public class Silver {
             printIndented(responseIndent, "Invalid task number.");
             return;
         }
-        tasks[taskNum - 1].mark();
-        printIndented(responseIndent, "Marked task " + taskNum + ": " + tasks[taskNum - 1].getDescription() + " as done.");
+        tasks.get(taskNum - 1).mark();
+        printIndented(responseIndent, "Marked task " + taskNum + ": " + tasks.get(taskNum - 1).getDescription() + " as done.");
     }
 
     static void unmark() {
@@ -91,8 +124,8 @@ public class Silver {
             printIndented(responseIndent, "Invalid task number.");
             return;
         }
-        tasks[taskNum - 1].unmark();
-        printIndented(responseIndent, "Unmarked task " + taskNum + ": " + tasks[taskNum - 1].getDescription() + " as done.");
+        tasks.get(taskNum - 1).unmark();
+        printIndented(responseIndent, "Unmarked task " + taskNum + ": " + tasks.get(taskNum - 1).getDescription() + " as done.");
     }
 
     static void list() {
@@ -103,7 +136,7 @@ public class Silver {
         printIndented(responseIndent, hString);
         for (int i = 0; i < taskCounter; i++) {
             printIndented(responseIndent, 
-                (i + 1) + ". " + tasks[i]);
+                (i + 1) + ". " + tasks.get(i).toString());
         }
         printIndented(responseIndent, hString);
     }
