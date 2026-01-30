@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 /**
  * This is the main class for the Silver task management application.
+ * 
  */
 public class Silver {
 
