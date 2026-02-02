@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.time.LocalDate;
 
@@ -11,8 +9,10 @@ public class Silver {
 
     public final String DATA_FILEPATH = "data/silver.txt";
 
-    private List<Task> tasks = new ArrayList<>();
+    
     private SilverUI ui = new SilverUI();
+    private Parser parser = new Parser();
+    private TaskList tasks = new TaskList();
     
     public Silver(String filePath) {
         if (!Filesystem.fileExists(DATA_FILEPATH)) {
@@ -27,7 +27,37 @@ public class Silver {
         ui.printResponseMessage("Loaded " + tasks.size() + " tasks from previous session.");
         ui.printResponseMessage("What can I do for you today?");
         Scanner scanner = new Scanner(System.in);
-        while (input(scanner)) {
+        while (true) {
+            int userInput = parser.input(scanner);
+            switch (userInput) {
+            case 1:
+                addTask(scanner);
+                break;
+            case 2:
+                deleteTask(scanner);
+                break;
+            case 3:
+                mark(scanner);
+                break;
+            case 4:
+                unmark(scanner);
+                break;
+            case 5:
+                list();
+                break;
+            case 6:
+                blah();
+                break;
+            case 7:
+                bye();
+                scanner.close();
+                return;
+            case 8:
+                unknownCommand();
+                break;
+            default:
+                break;
+            }
         }
     }
     public static void main(String[] args) {
@@ -35,36 +65,7 @@ public class Silver {
         silver.run();
     }
 
-     boolean input(Scanner scanner) {
-        String userInput = scanner.nextLine();
-        switch (userInput) {
-        case "add":
-            addTask(scanner);
-            break;
-        case "delete":
-            deleteTask(scanner);
-            break;
-        case "mark":
-            mark(scanner);
-            break;
-        case "unmark":
-            unmark(scanner);
-            break;
-        case "list":
-            list();
-            break;
-        case "blah":
-            blah();
-            break;
-        case "bye":
-            bye();
-            return false;
-        default:
-            unknownCommand();
-            break;
-        }
-        return true;
-    }
+     
 
     void addTask(Scanner scanner) {
         try {
@@ -140,7 +141,7 @@ public class Silver {
     }
 
      void bye() {
-        Filesystem.saveData(Filesystem.initializeFile(DATA_FILEPATH), new ArrayList<>(tasks));
+        Filesystem.saveData(Filesystem.initializeFile(DATA_FILEPATH), tasks);
         ui.printResponseMessage("Tasks saved to " + DATA_FILEPATH + ".");
         ui.printResponseMessage("Farewell. Until next time.");
     }

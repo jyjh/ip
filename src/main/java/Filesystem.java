@@ -41,9 +41,9 @@ public class Filesystem {
         return new File(filePath);
     }
 
-    public static void saveData(File file, ArrayList<Task> data) {
+    public static void saveData(File file, TaskList data) {
         try (BufferedWriter writer = new BufferedWriter(new java.io.FileWriter(file))) {
-            for (Task task : data) {
+            for (Task task : data.getAllTasks()) {
                 writer.write(task.saveState());
                 writer.newLine();
             }
@@ -54,7 +54,7 @@ public class Filesystem {
 
     }
 
-    public static ArrayList<Task> loadData(File file) {
+    public static TaskList loadData(File file) {
         // Implementation for loading data from a file
         try (BufferedReader reader = new BufferedReader(new java.io.FileReader(file))) {
             ArrayList<Task> tasks = new ArrayList<>();
@@ -77,10 +77,12 @@ public class Filesystem {
                     break;
                 }
             }
-            return tasks;
+            TaskList taskList = new TaskList();
+            taskList.setTasks(tasks);   
+            return taskList;
         } catch (Exception e) {
             System.out.println("Error loading data from filesystem: " + e.getMessage());
-            return new ArrayList<>();
+            return new TaskList();
         }
     }
 }
