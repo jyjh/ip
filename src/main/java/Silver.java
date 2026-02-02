@@ -1,14 +1,18 @@
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 /**
  * This is the main class for the Silver task management application.
+ * 
  */
 public class Silver {
 
     public static final int RESPONSE_INDENT = 1;
     public static final int MAX_TASKS = 100;
+    public static final String DATA_FILEPATH = "data/silver.txt";
+
     private static List<Task> tasks = new ArrayList<>();
     private static int taskCounter = 0;
     private static String hString = "____________________________________________________________";
@@ -21,6 +25,15 @@ public class Silver {
                 + "|____/|_|_| \\_/ \\___|_|   ";
         System.out.println("Hello. I'm \n" + logo);
         System.out.println(hString);
+
+        if (Filesystem.fileExists(DATA_FILEPATH)) {
+            System.out.println("No previous data found. Starting fresh.");
+        }
+        
+        tasks = Filesystem.loadData(Filesystem.initializeFile("data/silver.txt"));
+        taskCounter = tasks.size();
+        System.out.println("Loaded " + taskCounter + " tasks from previous session.");
+
         System.out.println("What can I do for you today?");
         Scanner scanner = new Scanner(System.in);
         while (input(scanner)){
@@ -135,6 +148,8 @@ public class Silver {
     }
 
     static void bye() {
+        Filesystem.saveData(Filesystem.initializeFile(DATA_FILEPATH), new ArrayList<>(tasks));
+        printIndented(RESPONSE_INDENT, "Tasks saved to " + DATA_FILEPATH + ".");
         printIndented(RESPONSE_INDENT, "Farewell. Until next time.");
     }
 
