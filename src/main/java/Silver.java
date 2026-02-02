@@ -1,4 +1,3 @@
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -10,39 +9,33 @@ import java.time.LocalDate;
  */
 public class Silver {
 
-    public static final int RESPONSE_INDENT = 1;
-    public static final int MAX_TASKS = 100;
-    public static final String DATA_FILEPATH = "data/silver.txt";
+    public final String DATA_FILEPATH = "data/silver.txt";
 
-    private static List<Task> tasks = new ArrayList<>();
-    private static int taskCounter = 0;
-    private static String hString = "____________________________________________________________";
-    public static void main(String[] args) {
-        String logo = ""
-                + " ____  _ _                \n"
-                + "/ ___|(_) |_   _____ _ __ \n"
-                + "\\___ \\| | \\ \\ / / _ \\ '__|\n"
-                + " ___) | | |\\ V /  __/ |   \n"
-                + "|____/|_|_| \\_/ \\___|_|   ";
-        System.out.println("Hello. I'm \n" + logo);
-        System.out.println(hString);
-
+    private List<Task> tasks = new ArrayList<>();
+    private SilverUI ui = new SilverUI();
+    
+    public Silver(String filePath) {
         if (!Filesystem.fileExists(DATA_FILEPATH)) {
             System.out.println("No previous data found. Starting fresh.");
-        }
-        
-        tasks = Filesystem.loadData(Filesystem.initializeFile("data/silver.txt"));
-        taskCounter = tasks.size();
-        System.out.println("Loaded " + taskCounter + " tasks from previous session.");
-
-        System.out.println("What can I do for you today?");
-        Scanner scanner = new Scanner(System.in);
-        while (input(scanner)){
-        }
-
+        }    
     }
 
-    static boolean input(Scanner scanner) {
+    public void run() {
+        ui.printWelcomeMessage();
+        ui.printDivider();
+        tasks = Filesystem.loadData(Filesystem.initializeFile("data/silver.txt"));
+        ui.printResponseMessage("Loaded " + tasks.size() + " tasks from previous session.");
+        ui.printResponseMessage("What can I do for you today?");
+        Scanner scanner = new Scanner(System.in);
+        while (input(scanner)) {
+        }
+    }
+    public static void main(String[] args) {
+        Silver silver = new Silver("data/silver.txt");
+        silver.run();
+    }
+
+     boolean input(Scanner scanner) {
         String userInput = scanner.nextLine();
         switch (userInput) {
         case "add":
@@ -73,28 +66,24 @@ public class Silver {
         return true;
     }
 
-    static void addTask(Scanner scanner) {
-        if (taskCounter >= MAX_TASKS) {
-            printIndented(RESPONSE_INDENT, "Task list is full. Cannot add more tasks.");
-            return;
-        }
+    void addTask(Scanner scanner) {
         try {
-            printIndented(RESPONSE_INDENT, "Enter the task description:");
-            printIndentedSingle(RESPONSE_INDENT, "> ");
+            ui.printResponseMessage("Enter the task description:");
+            ui.printResponseMessage("> ");
             String desc = scanner.nextLine();
             if (desc.isEmpty()) {
                 throw new IllegalArgumentException("Task description cannot be empty.");
             }
-            printIndented(RESPONSE_INDENT, "And what type of task is this? (todo/deadline/event)");
-            printIndentedSingle(RESPONSE_INDENT, "> ");
+            ui.printResponseMessage("And what type of task is this? (todo/deadline/event)");
+            ui.printResponseMessage("> ");
             String taskType = scanner.nextLine();
             switch (taskType) {
             case "todo":
                 tasks.add(new Todo(desc));
                 break;
             case "deadline":
-                printIndented(RESPONSE_INDENT, "Enter the due date/time (by):");
-                printIndentedSingle(RESPONSE_INDENT, "> ");
+                ui.printResponseMessage("Enter the due date/time (by):");
+                ui.printResponseMessage("> ");
                 String by = scanner.nextLine();
                 if (by.isEmpty()) {
                     throw new IllegalArgumentException("Deadline 'by' field cannot be empty.");
@@ -103,14 +92,14 @@ public class Silver {
                 tasks.add(new Deadline(desc, byDate));
                 break;
             case "event":
-                printIndented(RESPONSE_INDENT, "Enter the start date/time (from):");
-                printIndentedSingle(RESPONSE_INDENT, "> ");
+                ui.printResponseMessage("Enter the start date/time (from):");
+                ui.printResponseMessage("> ");
                 String from = scanner.nextLine();
                 if (from.isEmpty()) {
                     throw new IllegalArgumentException("Event 'from' field cannot be empty.");
                 }
-                printIndented(RESPONSE_INDENT, "Enter the end date/time (to):");
-                printIndentedSingle(RESPONSE_INDENT, "> ");
+                ui.printResponseMessage("Enter the end date/time (to):");
+                ui.printResponseMessage("> ");
                 String to = scanner.nextLine();
                 
                 if (to.isEmpty()) {
@@ -121,108 +110,106 @@ public class Silver {
                 tasks.add(new Events(desc, fromDate, toDate));
                 break;
             default:
-                printIndented(RESPONSE_INDENT, "Unknown task type. Please use 'todo', 'deadline', or 'event'.");
+                ui.printResponseMessage("Unknown task type. Please use 'todo', 'deadline', or 'event'.");
                 return;
             }
         } catch (IllegalArgumentException e) {
-            printIndented(RESPONSE_INDENT, e.getMessage());
+            ui.printResponseMessage(e.getMessage());
             return;
         }
-        printIndented(RESPONSE_INDENT, "Understood. I've added this task:\n> "
-            + tasks.get(taskCounter).getDescription());
-        taskCounter++;
+        ui.printResponseMessage("Understood. I've added this task:\n> "
+            + tasks.get(tasks.size() - 1).getDescription());
     }
 
-    static void deleteTask(Scanner scanner) {
-        printIndented(RESPONSE_INDENT, "Which task number do you want to delete?");
-        printIndentedSingle(RESPONSE_INDENT, "> ");
+     void deleteTask(Scanner scanner) {
+        ui.printResponseMessage("Which task number do you want to delete?");
+        ui.printResponseMessage("> ");
         int taskNum = 0;
         try {
             taskNum = Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
-            printIndented(RESPONSE_INDENT, "Please enter a valid task number.");
+            ui.printResponseMessage("Please enter a valid task number.");
             return;
         }
-        if (taskNum < 1 || taskNum > taskCounter) {
-            printIndented(RESPONSE_INDENT, "No such task found.");
+        if (taskNum < 1 || taskNum > tasks.size()) {
+            ui.printResponseMessage("No such task found.");
             return;
         }
         Task removedTask = tasks.remove(taskNum - 1);
-        taskCounter--;
-        printIndented(RESPONSE_INDENT, "Deleted task " + taskNum + ": " + removedTask.getDescription());
+        ui.printResponseMessage("Deleted task " + taskNum + ": " + removedTask.getDescription());
     }
 
-    static void bye() {
+     void bye() {
         Filesystem.saveData(Filesystem.initializeFile(DATA_FILEPATH), new ArrayList<>(tasks));
-        printIndented(RESPONSE_INDENT, "Tasks saved to " + DATA_FILEPATH + ".");
-        printIndented(RESPONSE_INDENT, "Farewell. Until next time.");
+        ui.printResponseMessage("Tasks saved to " + DATA_FILEPATH + ".");
+        ui.printResponseMessage("Farewell. Until next time.");
     }
 
-    static void unknownCommand() {
-        printIndented(RESPONSE_INDENT, "I'm sorry, I don't understand that command. Please try again.");
+     void unknownCommand() {
+        ui.printResponseMessage("I'm sorry, I don't understand that command. Please try again.");
     }
 
-    static void blah() {
-        printIndented(RESPONSE_INDENT, "Enter an actual command next time, please.");
+     void blah() {
+        ui.printResponseMessage("Enter an actual command next time, please.");
     }
 
-    static void mark(Scanner scanner) {
-        printIndented(RESPONSE_INDENT, "Which task number do you want to mark as done?");
-        printIndentedSingle(RESPONSE_INDENT, "> ");
+     void mark(Scanner scanner) {
+        ui.printResponseMessage("Which task number do you want to mark as done?");
+        ui.printResponseMessage("> ");
         int taskNum = 0;
         try {
             taskNum = Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
-            printIndented(RESPONSE_INDENT, "Please enter a valid task number.");
+            ui.printResponseMessage("Please enter a valid task number.");
             return;
         }
-        if (taskNum < 1 || taskNum > taskCounter) {
-            printIndented(RESPONSE_INDENT, "No such task found.");
+        if (taskNum < 1 || taskNum > tasks.size()) {
+            ui.printResponseMessage("No such task found.");
             return;
         }
         tasks.get(taskNum - 1).mark();
-        printIndented(RESPONSE_INDENT, "Marked task " + taskNum + ": "
+        ui.printResponseMessage("Marked task " + taskNum + ": "
             + tasks.get(taskNum - 1).getDescription() + " as done.");
     }
 
-    static void unmark(Scanner scanner) {
-        printIndented(RESPONSE_INDENT, "Which task number do you want to unmark as done?");
-        printIndentedSingle(RESPONSE_INDENT, "> ");
+     void unmark(Scanner scanner) {
+        ui.printResponseMessage("Which task number do you want to unmark as done?");
+        ui.printResponseMessage("> ");
         int taskNum = 0;
         try {
             taskNum = Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
-            printIndented(RESPONSE_INDENT, "Please enter a valid task number.");
+            ui.printResponseMessage("Please enter a valid task number.");
             return;
         }
-        if (taskNum < 1 || taskNum > taskCounter) {
-            printIndented(RESPONSE_INDENT, "No such task found.");
+        if (taskNum < 1 || taskNum > tasks.size()) {
+            ui.printResponseMessage("No such task found.");
             return;
         }
         tasks.get(taskNum - 1).unmark();
-        printIndented(RESPONSE_INDENT, "Unmarked task " + taskNum + ": "
+        ui.printResponseMessage("Unmarked task " + taskNum + ": "
             + tasks.get(taskNum - 1).getDescription() + " as done.");
     }
 
-    static void list() {
-        if (taskCounter == 0) {
-            printIndented(RESPONSE_INDENT, "Your task list is empty.");
+    void list() {
+        if (tasks.size() == 0) {
+            ui.printResponseMessage("Your task list is empty.");
             return;
         }
-        printIndented(RESPONSE_INDENT, hString);
-        for (int i = 0; i < taskCounter; i++) {
-            printIndented(RESPONSE_INDENT, (i + 1) + ". " + tasks.get(i).toString());
+        ui.printDivider();
+        for (int i = 0; i < tasks.size(); i++) {
+            ui.printResponseMessage((i + 1) + ". " + tasks.get(i).toString());
         }
-        printIndented(RESPONSE_INDENT, hString);
+        ui.printDivider();
     }
 
-    static void printIndented(int level, String message) {
+     void printIndented(int level, String message) {
         String[] lines = message.split("\n");
         for (String line : lines) {
             System.out.println("\t".repeat(level) + line);
         }
     }
-    static void printIndentedSingle(int level, String message) {
+     void printIndentedSingle(int level, String message) {
         System.out.print("\t".repeat(level) + message);
     }
 }
