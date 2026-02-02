@@ -1,8 +1,14 @@
+package silver;
+
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.io.BufferedWriter;
-import java.io.BufferedReader;
+
+
+
 
 /**
  * Provides utility methods for file operations such as checking existence,
@@ -41,6 +47,11 @@ public class Filesystem {
         return new File(filePath);
     }
 
+    /**
+     * Saves the given TaskList data to the specified file.
+     * @param file
+     * @param data
+     */
     public static void saveData(File file, TaskList data) {
         try (BufferedWriter writer = new BufferedWriter(new java.io.FileWriter(file))) {
             for (Task task : data.getAllTasks()) {
@@ -49,11 +60,14 @@ public class Filesystem {
             }
         } catch (Exception e) {
             System.out.println("Error saving data to filesystem: " + e.getMessage());
-            
         }
 
     }
 
+    /**
+     * Loads TaskList data from the specified file.
+     * @param file
+     */
     public static TaskList loadData(File file) {
         // Implementation for loading data from a file
         try (BufferedReader reader = new BufferedReader(new java.io.FileReader(file))) {
@@ -78,7 +92,7 @@ public class Filesystem {
                 }
             }
             TaskList taskList = new TaskList();
-            taskList.setTasks(tasks);   
+            taskList.setTasks(tasks);
             return taskList;
         } catch (Exception e) {
             System.out.println("Error loading data from filesystem: " + e.getMessage());

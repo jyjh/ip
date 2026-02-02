@@ -1,25 +1,30 @@
-import java.util.Scanner;
+package silver;
 import java.time.LocalDate;
+import java.util.Scanner;
+
 
 /**
  * This is the main class for the Silver task management application.
- * 
  */
 public class Silver {
 
-    public final String DATA_FILEPATH = "data/silver.txt";
+    public static final String DATA_FILEPATH = "data/silver.txt";
 
-    
     private SilverUI ui = new SilverUI();
     private Parser parser = new Parser();
     private TaskList tasks = new TaskList();
-    
+    /**
+     * Constructor for Silver application.
+     * @param filePath
+     */
     public Silver(String filePath) {
         if (!Filesystem.fileExists(DATA_FILEPATH)) {
             System.out.println("No previous data found. Starting fresh.");
-        }    
+        }
     }
-
+    /**
+     * Runs the main application loop, handling user input and commands.
+     */
     public void run() {
         ui.printWelcomeMessage();
         ui.printDivider();
@@ -64,9 +69,6 @@ public class Silver {
         Silver silver = new Silver("data/silver.txt");
         silver.run();
     }
-
-     
-
     void addTask(Scanner scanner) {
         try {
             ui.printResponseMessage("Enter the task description:");
@@ -102,7 +104,6 @@ public class Silver {
                 ui.printResponseMessage("Enter the end date/time (to):");
                 ui.printResponseMessage("> ");
                 String to = scanner.nextLine();
-                
                 if (to.isEmpty()) {
                     throw new IllegalArgumentException("Event 'to' field cannot be empty.");
                 }
@@ -122,7 +123,7 @@ public class Silver {
             + tasks.get(tasks.size() - 1).getDescription());
     }
 
-     void deleteTask(Scanner scanner) {
+    void deleteTask(Scanner scanner) {
         ui.printResponseMessage("Which task number do you want to delete?");
         ui.printResponseMessage("> ");
         int taskNum = 0;
@@ -140,21 +141,21 @@ public class Silver {
         ui.printResponseMessage("Deleted task " + taskNum + ": " + removedTask.getDescription());
     }
 
-     void bye() {
+    void bye() {
         Filesystem.saveData(Filesystem.initializeFile(DATA_FILEPATH), tasks);
         ui.printResponseMessage("Tasks saved to " + DATA_FILEPATH + ".");
         ui.printResponseMessage("Farewell. Until next time.");
     }
 
-     void unknownCommand() {
+    void unknownCommand() {
         ui.printResponseMessage("I'm sorry, I don't understand that command. Please try again.");
     }
 
-     void blah() {
+    void blah() {
         ui.printResponseMessage("Enter an actual command next time, please.");
     }
 
-     void mark(Scanner scanner) {
+    void mark(Scanner scanner) {
         ui.printResponseMessage("Which task number do you want to mark as done?");
         ui.printResponseMessage("> ");
         int taskNum = 0;
@@ -173,7 +174,7 @@ public class Silver {
             + tasks.get(taskNum - 1).getDescription() + " as done.");
     }
 
-     void unmark(Scanner scanner) {
+    void unmark(Scanner scanner) {
         ui.printResponseMessage("Which task number do you want to unmark as done?");
         ui.printResponseMessage("> ");
         int taskNum = 0;
@@ -204,13 +205,13 @@ public class Silver {
         ui.printDivider();
     }
 
-     void printIndented(int level, String message) {
+    void printIndented(int level, String message) {
         String[] lines = message.split("\n");
         for (String line : lines) {
             System.out.println("\t".repeat(level) + line);
         }
     }
-     void printIndentedSingle(int level, String message) {
+    void printIndentedSingle(int level, String message) {
         System.out.print("\t".repeat(level) + message);
     }
 }

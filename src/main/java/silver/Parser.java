@@ -1,3 +1,4 @@
+package silver;
 import java.util.Scanner;
 
 /**
