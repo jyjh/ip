@@ -2,6 +2,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.time.LocalDate;
 
 /**
  * This is the main class for the Silver task management application.
@@ -26,7 +27,7 @@ public class Silver {
         System.out.println("Hello. I'm \n" + logo);
         System.out.println(hString);
 
-        if (Filesystem.fileExists(DATA_FILEPATH)) {
+        if (!Filesystem.fileExists(DATA_FILEPATH)) {
             System.out.println("No previous data found. Starting fresh.");
         }
         
@@ -98,7 +99,8 @@ public class Silver {
                 if (by.isEmpty()) {
                     throw new IllegalArgumentException("Deadline 'by' field cannot be empty.");
                 }
-                tasks.add(new Deadline(desc, by));
+                LocalDate byDate = LocalDate.parse(by);
+                tasks.add(new Deadline(desc, byDate));
                 break;
             case "event":
                 printIndented(RESPONSE_INDENT, "Enter the start date/time (from):");
@@ -110,10 +112,13 @@ public class Silver {
                 printIndented(RESPONSE_INDENT, "Enter the end date/time (to):");
                 printIndentedSingle(RESPONSE_INDENT, "> ");
                 String to = scanner.nextLine();
+                
                 if (to.isEmpty()) {
                     throw new IllegalArgumentException("Event 'to' field cannot be empty.");
                 }
-                tasks.add(new Events(desc, from, to));
+                LocalDate toDate = LocalDate.parse(to);
+                LocalDate fromDate = LocalDate.parse(from);
+                tasks.add(new Events(desc, fromDate, toDate));
                 break;
             default:
                 printIndented(RESPONSE_INDENT, "Unknown task type. Please use 'todo', 'deadline', or 'event'.");
