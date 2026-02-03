@@ -1,3 +1,4 @@
+package silver;
 /**
  * Handles the user interface for Silver.
  */
