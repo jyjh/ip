@@ -32,7 +32,7 @@ application {
 }
 
 shadowJar {
-    archiveBaseName = "silver"
+    archiveBaseName = "silver.jar"
     archiveClassifier = null
 }
 
