@@ -16,10 +16,16 @@ public class Task {
         this.isDone = false;
     }
 
+    /**
+     * Marks the task as done.
+     */
     public void mark() {
         this.isDone = true;
     }
 
+    /**
+     * Marks the task as not done.
+     */
     public void unmark() {
         this.isDone = false;
     }
@@ -37,6 +43,10 @@ public class Task {
         return "[" + getStatusIcon() + "] " + description;
     }
 
+    /**
+     * Returns the current state of the task as a string, to be loaded later via loadFromSave.
+     * @return saveState string
+     */
     public String saveState() {
         return (isDone ? "1" : "0") + "|" + description;
     }
