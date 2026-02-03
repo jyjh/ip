@@ -10,18 +10,38 @@ public class Silver {
 
     public static final String DATA_FILEPATH = "data/silver.txt";
 
-    private SilverUI ui = new SilverUI();
+    private SilverUI ui;
     private Parser parser = new Parser();
     private TaskList tasks = new TaskList();
+
     /**
-     * Constructor for Silver application.
+     * Constructor for Silver application with default terminal GUI.
      * @param filePath
      */
     public Silver(String filePath) {
+        this(filePath, true);
+    }
+
+    /**
+     * Constructor for Silver application.
+     * @param filePath
+     * @param isTerminalGui
+     */
+    public Silver(String filePath, boolean isTerminalGui) {
+        ui = new SilverUI(isTerminalGui);
         if (!Filesystem.fileExists(DATA_FILEPATH)) {
             System.out.println("No previous data found. Starting fresh.");
         }
     }
+
+    /**
+     * Returns the response string for GUI display.
+     * @return response string
+     */
+    public String getResponseString() {
+        return ui.getResponseString();
+    }
+
     /**
      * Runs the main application loop, handling user input and commands.
      */
@@ -68,10 +88,11 @@ public class Silver {
             }
         }
     }
-    public static void main(String[] args) {
-        Silver silver = new Silver("data/silver.txt");
-        silver.run();
+
+    void coreLoop() {
+        
     }
+
     void addTask(Scanner scanner) {
         try {
             ui.printResponseMessage("Enter the task description:");

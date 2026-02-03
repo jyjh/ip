@@ -12,6 +12,12 @@ public class SilverUI {
             + " ___) | | |\\ V /  __/ |   \n"
             + "|____/|_|_| \\_/ \\___|_|   ";
     private String hString = "____________________________________________________________";
+    private boolean isTerminalGui;
+    private String responseString;
+
+    public SilverUI(boolean isTerminalGui) {
+        this.isTerminalGui = isTerminalGui;
+    }
 
     /**
      * Prints a message with the preset indentation level.
@@ -33,13 +39,27 @@ public class SilverUI {
         printIndented(0, hString);
     }
 
+    public String getResponseString(String input) {
+        String result = responseString;
+        responseString = "";
+        return result;
+    }
+
     private void printIndented(int level, String message) {
-        String[] lines = message.split("\n");
-        for (String line : lines) {
-            System.out.println("\t".repeat(level) + line);
+        if (isTerminalGui) {
+            responseString += message + "\n";
+        } else {
+            String[] lines = message.split("\n");
+            for (String line : lines) {
+                System.out.println("\t".repeat(level) + line);
+            }
         }
     }
     private void printIndentedSingle(int level, String message) {
-        System.out.println("\t".repeat(level) + message);
+        if (isTerminalGui) {
+            System.out.println("\t".repeat(level) + message);
+        } else {
+            responseString += message + "\n";
+        }
     }
 }
