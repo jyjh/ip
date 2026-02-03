@@ -22,6 +22,8 @@ public class Parser {
             return 6;
         case "bye":
             return 7;
+        case "find":
+            return 9;
         default:
             return 8;
         }

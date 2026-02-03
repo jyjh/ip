@@ -19,4 +19,6 @@ AI was also used to adapt the code across the different class types when copy-pa
 
 AI was also used to automatically generate the JUnit test cases.
 
+AI automatically generated the entire 'find' feature required by Level-9.
+
 ## Week 4

@@ -60,6 +60,9 @@ public class Silver {
             case 8:
                 unknownCommand();
                 break;
+            case 9:
+                find();
+                break;
             default:
                 break;
             }
@@ -205,13 +208,19 @@ public class Silver {
         ui.printDivider();
     }
 
-    void printIndented(int level, String message) {
-        String[] lines = message.split("\n");
-        for (String line : lines) {
-            System.out.println("\t".repeat(level) + line);
+    void find() {
+        ui.printResponseMessage("Enter the keyword to search for:");
+        ui.printResponseMessage("> ");
+        Scanner scanner = new Scanner(System.in);
+        String keyword = scanner.nextLine();
+        TaskList foundTasks = tasks.findTasks(keyword);
+        if (foundTasks.size() == 0) {
+            ui.printResponseMessage("No tasks found matching the keyword: " + keyword);
+            return;
         }
-    }
-    void printIndentedSingle(int level, String message) {
-        System.out.print("\t".repeat(level) + message);
+        ui.printResponseMessage("Here are the matching tasks in your list:");
+        for (int i = 0; i < foundTasks.size(); i++) {
+            ui.printResponseMessage((i + 1) + ". " + foundTasks.get(i).toString());
+        }
     }
 }

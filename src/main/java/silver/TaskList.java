@@ -45,4 +45,19 @@ public class TaskList {
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
+
+    /**
+     * Returns a TaskList of tasks that contain the specified keyword.
+     * @param keyword
+     * @return
+     */
+    public TaskList findTasks(String keyword) {
+        TaskList foundTasks = new TaskList();
+        for (Task task : tasks) {
+            if (task.getDescription().contains(keyword)) {
+                foundTasks.add(task);
+            }
+        }
+        return foundTasks;
+    }
 }
