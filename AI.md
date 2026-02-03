@@ -16,3 +16,7 @@ The various task subclassess were also generated via AI.
 AI was used to generate the regex operations for loading the Task classes from their saveState strings.
 
 AI was also used to adapt the code across the different class types when copy-pasting (it automatically renames the various variables + changes the lines of code to match the differing variables. It does the same for javadoc comments.)
+
+AI was also used to automatically generate the JUnit test cases.
+
+## Week 4
