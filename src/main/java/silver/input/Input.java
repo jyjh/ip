@@ -1,4 +1,4 @@
-package silver;
+package silver.input;
 
 /**
  * Handles input from various sources.

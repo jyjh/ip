@@ -1,4 +1,4 @@
-package silver;
+package silver.input;
 
 import java.util.Scanner;
 /**
