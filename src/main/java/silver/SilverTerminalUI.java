@@ -2,7 +2,7 @@ package silver;
 /**
  * Handles the user interface for Silver.
  */
-public class SilverUI {
+public class SilverTerminalUI {
 
     public static final int RESPONSE_INDENT = 1;
     private String logo = ""
