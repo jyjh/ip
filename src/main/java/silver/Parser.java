@@ -1,13 +1,11 @@
 package silver;
-import java.util.Scanner;
 
 /**
  * Parses user input commands and maps them to corresponding action codes.
  */
 public class Parser {
-    int input(Scanner scanner) {
-        String userInput = scanner.nextLine();
-        switch (userInput) {
+    int input(String input) {
+        switch (input) {
         case "add":
             return 1;
         case "delete":

@@ -1,6 +1,5 @@
 package silver;
 import java.time.LocalDate;
-import java.util.Scanner;
 
 
 /**
@@ -10,9 +9,10 @@ public class Silver {
 
     public static final String DATA_FILEPATH = "data/silver.txt";
 
-    private SilverUI ui = new SilverUI();
+    private SilverTerminalUI ui = new SilverTerminalUI();
     private Parser parser = new Parser();
     private TaskList tasks = new TaskList();
+    private Input inputSystem;
     /**
      * Constructor for Silver application.
      * @param filePath
@@ -21,6 +21,7 @@ public class Silver {
         if (!Filesystem.fileExists(DATA_FILEPATH)) {
             System.out.println("No previous data found. Starting fresh.");
         }
+        inputSystem = new TerminalInput();
     }
     /**
      * Runs the main application loop, handling user input and commands.
@@ -31,21 +32,20 @@ public class Silver {
         tasks = Filesystem.loadData(Filesystem.initializeFile("data/silver.txt"));
         ui.printResponseMessage("Loaded " + tasks.size() + " tasks from previous session.");
         ui.printResponseMessage("What can I do for you today?");
-        Scanner scanner = new Scanner(System.in);
         while (true) {
-            int userInput = parser.input(scanner);
+            int userInput = parser.input(inputSystem.getInput());
             switch (userInput) {
             case 1:
-                addTask(scanner);
+                addTask();
                 break;
             case 2:
-                deleteTask(scanner);
+                deleteTask();
                 break;
             case 3:
-                mark(scanner);
+                mark();
                 break;
             case 4:
-                unmark(scanner);
+                unmark();
                 break;
             case 5:
                 list();
@@ -55,7 +55,6 @@ public class Silver {
                 break;
             case 7:
                 bye();
-                scanner.close();
                 return;
             case 8:
                 unknownCommand();
@@ -72,17 +71,17 @@ public class Silver {
         Silver silver = new Silver("data/silver.txt");
         silver.run();
     }
-    void addTask(Scanner scanner) {
+    void addTask() {
         try {
             ui.printResponseMessage("Enter the task description:");
             ui.printResponseMessage("> ");
-            String desc = scanner.nextLine();
+            String desc = inputSystem.getInput();
             if (desc.isEmpty()) {
                 throw new IllegalArgumentException("Task description cannot be empty.");
             }
             ui.printResponseMessage("And what type of task is this? (todo/deadline/event)");
             ui.printResponseMessage("> ");
-            String taskType = scanner.nextLine();
+            String taskType = inputSystem.getInput();
             switch (taskType) {
             case "todo":
                 tasks.add(new Todo(desc));
@@ -90,7 +89,7 @@ public class Silver {
             case "deadline":
                 ui.printResponseMessage("Enter the due date/time (by):");
                 ui.printResponseMessage("> ");
-                String by = scanner.nextLine();
+                String by = inputSystem.getInput();
                 if (by.isEmpty()) {
                     throw new IllegalArgumentException("Deadline 'by' field cannot be empty.");
                 }
@@ -100,13 +99,13 @@ public class Silver {
             case "event":
                 ui.printResponseMessage("Enter the start date/time (from):");
                 ui.printResponseMessage("> ");
-                String from = scanner.nextLine();
+                String from = inputSystem.getInput();
                 if (from.isEmpty()) {
                     throw new IllegalArgumentException("Event 'from' field cannot be empty.");
                 }
                 ui.printResponseMessage("Enter the end date/time (to):");
                 ui.printResponseMessage("> ");
-                String to = scanner.nextLine();
+                String to = inputSystem.getInput();
                 if (to.isEmpty()) {
                     throw new IllegalArgumentException("Event 'to' field cannot be empty.");
                 }
@@ -126,12 +125,12 @@ public class Silver {
             + tasks.get(tasks.size() - 1).getDescription());
     }
 
-    void deleteTask(Scanner scanner) {
+    void deleteTask() {
         ui.printResponseMessage("Which task number do you want to delete?");
         ui.printResponseMessage("> ");
         int taskNum = 0;
         try {
-            taskNum = Integer.parseInt(scanner.nextLine());
+            taskNum = Integer.parseInt(inputSystem.getInput());
         } catch (NumberFormatException e) {
             ui.printResponseMessage("Please enter a valid task number.");
             return;
@@ -148,6 +147,7 @@ public class Silver {
         Filesystem.saveData(Filesystem.initializeFile(DATA_FILEPATH), tasks);
         ui.printResponseMessage("Tasks saved to " + DATA_FILEPATH + ".");
         ui.printResponseMessage("Farewell. Until next time.");
+        inputSystem.close();
     }
 
     void unknownCommand() {
@@ -158,12 +158,12 @@ public class Silver {
         ui.printResponseMessage("Enter an actual command next time, please.");
     }
 
-    void mark(Scanner scanner) {
+    void mark() {
         ui.printResponseMessage("Which task number do you want to mark as done?");
         ui.printResponseMessage("> ");
         int taskNum = 0;
         try {
-            taskNum = Integer.parseInt(scanner.nextLine());
+            taskNum = Integer.parseInt(inputSystem.getInput());
         } catch (NumberFormatException e) {
             ui.printResponseMessage("Please enter a valid task number.");
             return;
@@ -177,12 +177,12 @@ public class Silver {
             + tasks.get(taskNum - 1).getDescription() + " as done.");
     }
 
-    void unmark(Scanner scanner) {
+    void unmark() {
         ui.printResponseMessage("Which task number do you want to unmark as done?");
         ui.printResponseMessage("> ");
         int taskNum = 0;
         try {
-            taskNum = Integer.parseInt(scanner.nextLine());
+            taskNum = Integer.parseInt(inputSystem.getInput());
         } catch (NumberFormatException e) {
             ui.printResponseMessage("Please enter a valid task number.");
             return;
@@ -211,8 +211,7 @@ public class Silver {
     void find() {
         ui.printResponseMessage("Enter the keyword to search for:");
         ui.printResponseMessage("> ");
-        Scanner scanner = new Scanner(System.in);
-        String keyword = scanner.nextLine();
+        String keyword = inputSystem.getInput();
         TaskList foundTasks = tasks.findTasks(keyword);
         if (foundTasks.size() == 0) {
             ui.printResponseMessage("No tasks found matching the keyword: " + keyword);
