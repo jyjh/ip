@@ -14,7 +14,7 @@
       </Label>
       <ImageView fx:id="displayPicture" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/test.png" />
+            <Image url="@../images/silver.png" />
          </image>
       </ImageView>
    </children>

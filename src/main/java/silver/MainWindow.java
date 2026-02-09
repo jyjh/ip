@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 /**
  * Controller for the main GUI.
  */
-public class MainWindow extends AnchorPane {
+public class MainWindow extends AnchorPane implements SilverUI.MessageCallback {
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -23,19 +23,23 @@ public class MainWindow extends AnchorPane {
     private Silver silver;
     private SilverGraphicalUI ui;
 
-    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/test.png"));
-    private Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/test.png"));
+    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/user.png"));
+    private Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/silver.png"));
 
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
         ui = new SilverGraphicalUI();
+        ui.setMessageCallback(this);
         silver = new Silver(Silver.DATA_FILEPATH, ui);
         silver.initialize();
+    }
 
-        // Display welcome message
-        dialogContainer.getChildren().addAll(
-            DialogBox.getSilverDialog("Hello! I'm Silver\nWhat can I do for you today?", dukeImage)
+    @Override
+    public void onMessage(String message) {
+        // Add Silver's response message immediately as it's generated
+        dialogContainer.getChildren().add(
+            DialogBox.getSilverDialog(message, dukeImage)
         );
     }
 
@@ -53,11 +57,15 @@ public class MainWindow extends AnchorPane {
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        String response = silver.processCommand(input);
-        dialogContainer.getChildren().addAll(
-            DialogBox.getUserDialog(input, userImage),
-            DialogBox.getSilverDialog(response, dukeImage)
+
+        // Display user input immediately
+        dialogContainer.getChildren().add(
+            DialogBox.getUserDialog(input, userImage)
         );
+
+        // Process command - responses will be displayed via callback
+        silver.processCommand(input);
+
         userInput.clear();
     }
 }

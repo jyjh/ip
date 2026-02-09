@@ -60,11 +60,10 @@ public class DialogBox extends HBox {
      */
     private void styleAsUserMessage() {
         setAlignment(Pos.TOP_RIGHT);
-        displayPicture.setVisible(false);
-        displayPicture.setManaged(false);
-        
+
         // Style as user message (green bubble, right-aligned)
-        dialog.setStyle("-fx-background-color: #2b5278; -fx-background-radius: 10; -fx-text-fill: white; -fx-wrap-text: true; -fx-padding: 10 15 10 15;");
+        dialog.setStyle("-fx-background-color: #2b5278; -fx-background-radius: 10; "
+            + "-fx-text-fill: white; -fx-wrap-text: true; -fx-padding: 10 15 10 15;");
     }
 
     public static DialogBox getUserDialog(String text, Image img) {

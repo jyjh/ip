@@ -20,11 +20,14 @@ public class SilverGraphicalUI extends SilverUI {
     @Override
     public void printResponseMessage(String message) {
         responseBuffer.append(message).append("\n");
+        notifyCallback(message);
     }
 
+
+    //Does nothing since divider is not needed in GUI.
     @Override
     public void printDivider() {
-        responseBuffer.append("____________________________________________________________\n");
+        return;
     }
 
     @Override

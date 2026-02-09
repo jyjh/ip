@@ -165,6 +165,7 @@ public class Silver {
         }
         ui.printResponseMessage("Understood. I've added this task:\n> "
             + tasks.get(tasks.size() - 1).getDescription());
+        saveTasks();
     }
 
     void deleteTask(String[] args) {
@@ -185,13 +186,20 @@ public class Silver {
         }
         Task removedTask = tasks.remove(taskNum - 1);
         ui.printResponseMessage("Deleted task " + taskNum + ": " + removedTask.getDescription());
+        saveTasks();
     }
 
     void bye() {
-        Filesystem.saveData(Filesystem.initializeFile(DATA_FILEPATH), tasks);
-        ui.printResponseMessage("Tasks saved to " + DATA_FILEPATH + ".");
+        saveTasks();
         ui.printResponseMessage("Farewell. Until next time.");
         inputSystem.close();
+    }
+
+    /**
+     * Saves tasks to the data file.
+     */
+    private void saveTasks() {
+        Filesystem.saveData(Filesystem.initializeFile(DATA_FILEPATH), tasks);
     }
 
     void unknownCommand() {
@@ -221,6 +229,7 @@ public class Silver {
         tasks.get(taskNum - 1).mark();
         ui.printResponseMessage("Marked task " + taskNum + ": "
             + tasks.get(taskNum - 1).getDescription() + " as done.");
+        saveTasks();
     }
 
     void unmark(String[] args) {
@@ -242,6 +251,7 @@ public class Silver {
         tasks.get(taskNum - 1).unmark();
         ui.printResponseMessage("Unmarked task " + taskNum + ": "
             + tasks.get(taskNum - 1).getDescription() + " as done.");
+        saveTasks();
     }
 
     void list() {
@@ -250,9 +260,7 @@ public class Silver {
             return;
         }
         ui.printDivider();
-        for (int i = 0; i < tasks.size(); i++) {
-            ui.printResponseMessage((i + 1) + ". " + tasks.get(i).toString());
-        }
+        ui.printResponseMessage(tasks.listTasks());
         ui.printDivider();
     }
 
@@ -267,9 +275,7 @@ public class Silver {
             ui.printResponseMessage("No tasks found matching the keyword: " + keyword);
             return;
         }
-        ui.printResponseMessage("Here are the matching tasks in your list:");
-        for (int i = 0; i < foundTasks.size(); i++) {
-            ui.printResponseMessage((i + 1) + ". " + foundTasks.get(i).toString());
-        }
+        ui.printResponseMessage("Here are the matching tasks in your list:\n"
+            + foundTasks.listTasks());
     }
 }
