@@ -1,8 +1,9 @@
 package silver;
+
 /**
- * Handles the user interface for Silver.
+ * Handles the terminal-based user interface for Silver.
  */
-public class SilverTerminalUI {
+public class SilverTerminalUI extends SilverUI {
 
     public static final int RESPONSE_INDENT = 1;
     private String logo = ""
@@ -39,6 +40,7 @@ public class SilverTerminalUI {
             System.out.println("\t".repeat(level) + line);
         }
     }
+
     private void printIndentedSingle(int level, String message) {
         System.out.println("\t".repeat(level) + message);
     }
