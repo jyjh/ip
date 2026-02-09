@@ -1,8 +1,9 @@
 package silver;
+
 /**
- * Handles the user interface for Silver.
+ * Handles the terminal-based user interface for Silver.
  */
-public class SilverTerminalUI {
+public class SilverTerminalUI extends SilverUI {
 
     public static final int RESPONSE_INDENT = 1;
     private String logo = ""
@@ -12,12 +13,6 @@ public class SilverTerminalUI {
             + " ___) | | |\\ V /  __/ |   \n"
             + "|____/|_|_| \\_/ \\___|_|   ";
     private String hString = "____________________________________________________________";
-    private boolean isTerminalGui;
-    private String responseString;
-
-    public SilverUI(boolean isTerminalGui) {
-        this.isTerminalGui = isTerminalGui;
-    }
 
     /**
      * Prints a message with the preset indentation level.
@@ -39,27 +34,14 @@ public class SilverTerminalUI {
         printIndented(0, hString);
     }
 
-    public String getResponseString(String input) {
-        String result = responseString;
-        responseString = "";
-        return result;
+    private void printIndented(int level, String message) {
+        String[] lines = message.split("\n");
+        for (String line : lines) {
+            System.out.println("\t".repeat(level) + line);
+        }
     }
 
-    private void printIndented(int level, String message) {
-        if (isTerminalGui) {
-            responseString += message + "\n";
-        } else {
-            String[] lines = message.split("\n");
-            for (String line : lines) {
-                System.out.println("\t".repeat(level) + line);
-            }
-        }
-    }
     private void printIndentedSingle(int level, String message) {
-        if (isTerminalGui) {
-            System.out.println("\t".repeat(level) + message);
-        } else {
-            responseString += message + "\n";
-        }
+        System.out.println("\t".repeat(level) + message);
     }
 }

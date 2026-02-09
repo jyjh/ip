@@ -2,10 +2,19 @@ package silver;
 
 /**
  * Parses user input commands and maps them to corresponding action codes.
+ * Also extracts command arguments for single-line command execution.
  */
 public class Parser {
+    private String[] commandArgs;
+
     int input(String input) {
-        switch (input) {
+        String[] parts = input.trim().split(" ", 2);
+        String command = parts[0].toLowerCase();
+
+        // Store the full input for argument parsing
+        commandArgs = input.trim().split(" ");
+        
+        switch (command) {
         case "add":
             return 1;
         case "delete":
@@ -25,5 +34,13 @@ public class Parser {
         default:
             return 8;
         }
+    }
+    
+    /**
+     * Gets the arguments from the last parsed command.
+     * @return Array of command arguments
+     */
+    String[] getCommandArgs() {
+        return commandArgs;
     }
 }

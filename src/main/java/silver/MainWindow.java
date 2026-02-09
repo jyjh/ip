@@ -1,4 +1,4 @@
-package silver
+package silver;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -21,6 +21,7 @@ public class MainWindow extends AnchorPane {
     private Button sendButton;
 
     private Silver silver;
+    private SilverGraphicalUI ui;
 
     private Image userImage = new Image(this.getClass().getResourceAsStream("/images/test.png"));
     private Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/test.png"));
@@ -28,11 +29,21 @@ public class MainWindow extends AnchorPane {
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+        ui = new SilverGraphicalUI();
+        silver = new Silver(Silver.DATA_FILEPATH, ui);
+        silver.initialize();
+
+        // Display welcome message
+        dialogContainer.getChildren().addAll(
+            DialogBox.getSilverDialog("Hello! I'm Silver\nWhat can I do for you today?", dukeImage)
+        );
     }
 
-    /** Injects the Silver instance */
-    public void setSilver(Silver s) {
-        silver = s;
+    /**
+     * Handles the window close event to save data.
+     */
+    public void handleWindowClose() {
+        silver.processCommand("bye");
     }
 
     /**
@@ -42,10 +53,10 @@ public class MainWindow extends AnchorPane {
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        String response = silver.getResponseString(input);
+        String response = silver.processCommand(input);
         dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(response, dukeImage)
+            DialogBox.getUserDialog(input, userImage),
+            DialogBox.getSilverDialog(response, dukeImage)
         );
         userInput.clear();
     }
