@@ -1,46 +1,48 @@
 package silver;
 
+
+import java.lang.reflect.Constructor;
+
+import silver.commands.Command;
+import silver.commands.CommandRegistry;
+import silver.commands.UnknownCommand;
+
 /**
- * Parses user input commands and maps them to corresponding action codes.
- * Also extracts command arguments for single-line command execution.
+ * Parses user input commands and creates corresponding Command objects.
  */
 public class Parser {
-    private String[] commandArgs;
 
-    int input(String input) {
+    /**
+     * Parses user input and returns the corresponding Command object.
+     * @param input The user input string
+     * @return The Command object to execute
+     */
+    Command parse(String input) {
         String[] parts = input.trim().split(" ", 2);
         String command = parts[0].toLowerCase();
 
         // Store the full input for argument parsing
-        commandArgs = input.trim().split(" ");
-        
-        switch (command) {
-        case "add":
-            return 1;
-        case "delete":
-            return 2;
-        case "mark":
-            return 3;
-        case "unmark":
-            return 4;
-        case "list":
-            return 5;
-        case "blah":
-            return 6;
-        case "bye":
-            return 7;
-        case "find":
-            return 9;
-        default:
-            return 8;
+        String[] commandArgs = input.trim().split(" ");
+
+        // Iterate through command classes to find a match
+        for (Class<?> commandClass : CommandRegistry.COMMAND_CLASSES) {
+            try {
+                // Instantiate the command with empty args to check keyword
+                Constructor<?> constructor = commandClass.getConstructor(String[].class);
+                String[] emptyArgs = new String[0];
+                Command cmd = (Command) constructor.newInstance((Object) emptyArgs);
+                // Check if the command keyword matches
+                if (command.equals(cmd.getKeyword())) {
+                    // Return a new instance with the actual arguments
+                    return (Command) constructor.newInstance((Object) commandArgs);
+                }
+            } catch (Exception e) {
+                // Skip commands that can't be instantiated or matched
+                continue;
+            }
         }
-    }
-    
-    /**
-     * Gets the arguments from the last parsed command.
-     * @return Array of command arguments
-     */
-    String[] getCommandArgs() {
-        return commandArgs;
+
+        // If no command matched, return UnknownCommand
+        return new UnknownCommand(commandArgs);
     }
 }

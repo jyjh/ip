@@ -22,3 +22,23 @@ AI was also used to automatically generate the JUnit test cases.
 AI automatically generated the entire 'find' feature required by Level-9.
 
 ## Week 4
+
+From here onwards, I have changed AI models and usage.
+
+I am now using GLM 4.7, from Z.ai's coding lite plan. I am combining this with Cline for VSCode.
+I am also no longer writing any code beyond the bare minimum / bug fixes. _Everything_ is AI generated from now.
+
+The entire transition from TUI to GUI was AI powered. This included
+- Generating the GUI elements.
+- Changing the parser to use String input instead of scanner directly.
+- Having the app be toggleable between terminal output and gui from an argument.
+
+
+## Week 5
+
+Continuing the fully AI generated code, the following refactors to my code were done.
+- Changed commands to each have their own class.
+- Created an abstract command class for said commands to inherit from.
+- Created a class to store a static reference to all command classes
+- Changed Parser to pull the list from the CommandRegistry instead of using a manually updated switch case
+- Created a HelpCommand that also uses the CommandRegistry to automatically create a help command from all the usage strings of each command class.
