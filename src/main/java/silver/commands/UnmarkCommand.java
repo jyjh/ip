@@ -12,9 +12,14 @@ public class UnmarkCommand extends Command {
     }
 
     @Override
+    public String getKeyword() {
+        return "unmark";
+    }
+
+    @Override
     public void validateInput() throws IllegalArgumentException {
         if (args.length < 2) {
-            throw new IllegalArgumentException("Invalid format. Usage: unmark [task-number]");
+            throw new IllegalArgumentException("Invalid format. Usage: " + getUsage());
         }
         try {
             int taskNum = Integer.parseInt(args[1]);
@@ -44,5 +49,10 @@ public class UnmarkCommand extends Command {
         tasks.get(taskNum - 1).unmark();
         ui.printResponseMessage("Unmarked task " + taskNum + ": "
             + tasks.get(taskNum - 1).getDescription() + " as done.");
+    }
+
+    @Override
+    public String getUsage() {
+        return getKeyword() + " [task-number]";
     }
 }

@@ -1,16 +1,11 @@
 package silver;
 
 
-import silver.commands.AddCommand;
-import silver.commands.BlahCommand;
-import silver.commands.ByeCommand;
+import java.lang.reflect.Constructor;
+
 import silver.commands.Command;
-import silver.commands.DeleteCommand;
-import silver.commands.FindCommand;
-import silver.commands.ListCommand;
-import silver.commands.MarkCommand;
+import silver.commands.CommandRegistry;
 import silver.commands.UnknownCommand;
-import silver.commands.UnmarkCommand;
 
 /**
  * Parses user input commands and creates corresponding Command objects.
@@ -29,25 +24,25 @@ public class Parser {
         // Store the full input for argument parsing
         String[] commandArgs = input.trim().split(" ");
 
-        switch (command) {
-        case "add":
-            return new AddCommand(commandArgs);
-        case "delete":
-            return new DeleteCommand(commandArgs);
-        case "mark":
-            return new MarkCommand(commandArgs);
-        case "unmark":
-            return new UnmarkCommand(commandArgs);
-        case "list":
-            return new ListCommand(commandArgs);
-        case "blah":
-            return new BlahCommand(commandArgs);
-        case "bye":
-            return new ByeCommand(commandArgs);
-        case "find":
-            return new FindCommand(commandArgs);
-        default:
-            return new UnknownCommand(commandArgs);
+        // Iterate through command classes to find a match
+        for (Class<?> commandClass : CommandRegistry.COMMAND_CLASSES) {
+            try {
+                // Instantiate the command with empty args to check keyword
+                Constructor<?> constructor = commandClass.getConstructor(String[].class);
+                String[] emptyArgs = new String[0];
+                Command cmd = (Command) constructor.newInstance((Object) emptyArgs);
+                // Check if the command keyword matches
+                if (command.equals(cmd.getKeyword())) {
+                    // Return a new instance with the actual arguments
+                    return (Command) constructor.newInstance((Object) commandArgs);
+                }
+            } catch (Exception e) {
+                // Skip commands that can't be instantiated or matched
+                continue;
+            }
         }
+
+        // If no command matched, return UnknownCommand
+        return new UnknownCommand(commandArgs);
     }
 }

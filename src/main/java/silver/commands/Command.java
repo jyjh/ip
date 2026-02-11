@@ -39,4 +39,16 @@ public abstract class Command {
     public String[] getArgs() {
         return args;
     }
+
+    /**
+     * Gets the usage string for this command.
+     * @return A string describing how to use this command
+     */
+    public abstract String getUsage();
+
+    /**
+     * Gets the keyword for this command.
+     * @return The command keyword (e.g., "add", "list", "delete")
+     */
+    public abstract String getKeyword();
 }

@@ -12,6 +12,11 @@ public class BlahCommand extends Command {
     }
 
     @Override
+    public String getKeyword() {
+        return "blah";
+    }
+
+    @Override
     public void validateInput() throws IllegalArgumentException {
         // No arguments required for blah command
     }
@@ -19,5 +24,10 @@ public class BlahCommand extends Command {
     @Override
     public void execute(TaskList tasks, SilverUI ui) {
         ui.printResponseMessage("Enter an actual command next time, please.");
+    }
+
+    @Override
+    public String getUsage() {
+        return getKeyword();
     }
 }

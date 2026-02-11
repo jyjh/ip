@@ -12,9 +12,14 @@ public class FindCommand extends Command {
     }
 
     @Override
+    public String getKeyword() {
+        return "find";
+    }
+
+    @Override
     public void validateInput() throws IllegalArgumentException {
         if (args.length < 2) {
-            throw new IllegalArgumentException("Invalid format. Usage: find [keyword]");
+            throw new IllegalArgumentException("Invalid format. Usage: " + getUsage());
         }
         if (args[1].isEmpty()) {
             throw new IllegalArgumentException("Keyword cannot be empty.");
@@ -38,5 +43,10 @@ public class FindCommand extends Command {
         }
         ui.printResponseMessage("Here are the matching tasks in your list:\n"
             + foundTasks.listTasks());
+    }
+
+    @Override
+    public String getUsage() {
+        return getKeyword() + " [keyword]";
     }
 }

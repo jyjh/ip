@@ -12,6 +12,11 @@ public class ListCommand extends Command {
     }
 
     @Override
+    public String getKeyword() {
+        return "list";
+    }
+
+    @Override
     public void validateInput() throws IllegalArgumentException {
         // No arguments required for list command
     }
@@ -25,5 +30,10 @@ public class ListCommand extends Command {
         ui.printDivider();
         ui.printResponseMessage(tasks.listTasks());
         ui.printDivider();
+    }
+
+    @Override
+    public String getUsage() {
+        return getKeyword();
     }
 }

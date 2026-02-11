@@ -17,10 +17,14 @@ public class AddCommand extends Command {
     }
 
     @Override
+    public String getKeyword() {
+        return "add";
+    }
+
+    @Override
     public void validateInput() throws IllegalArgumentException {
         if (args.length < 3) {
-            throw new IllegalArgumentException("Invalid format. Usage: add todo/deadline/event [description] "
-                + "[additional args]");
+            throw new IllegalArgumentException("Invalid format. Usage: " + getUsage());
         }
         String taskType = args[1].toLowerCase();
         String desc = args[2];
@@ -35,7 +39,9 @@ public class AddCommand extends Command {
             break;
         case "deadline":
             if (args.length < 4) {
-                throw new IllegalArgumentException("Invalid format. Usage: add deadline [description] [due-date]");
+                throw new IllegalArgumentException("Invalid format. Usage: "
+                    + getKeyword()
+                    + " deadline [description] [due-date]");
             }
             String by = args[3];
             if (by.isEmpty()) {
@@ -44,7 +50,7 @@ public class AddCommand extends Command {
             break;
         case "event":
             if (args.length < 5) {
-                throw new IllegalArgumentException("Invalid format. Usage: add event [description] "
+                throw new IllegalArgumentException("Invalid format. Usage: " + getKeyword() + " event [description] "
                     + "[from-date] [to-date]");
             }
             String from = args[3];
@@ -101,5 +107,13 @@ public class AddCommand extends Command {
 
         ui.printResponseMessage("Understood. I've added this task:\n> "
             + tasks.get(tasks.size() - 1).getDescription());
+    }
+
+    @Override
+    public String getUsage() {
+        return getKeyword() + " todo/deadline/event [description] [additional args]\n"
+            + "  - todo: " + getKeyword() + " todo [description]\n"
+            + "  - deadline: " + getKeyword() + " deadline [description] [due-date]\n"
+            + "  - event: " + getKeyword() + " event [description] [from-date] [to-date]";
     }
 }

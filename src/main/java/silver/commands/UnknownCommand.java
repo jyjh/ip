@@ -12,6 +12,11 @@ public class UnknownCommand extends Command {
     }
 
     @Override
+    public String getKeyword() {
+        return "";
+    }
+
+    @Override
     public void validateInput() throws IllegalArgumentException {
         // No arguments required for unknown command
     }
@@ -19,5 +24,10 @@ public class UnknownCommand extends Command {
     @Override
     public void execute(TaskList tasks, SilverUI ui) {
         ui.printResponseMessage("I'm sorry, I don't understand that command. Please try again.");
+    }
+
+    @Override
+    public String getUsage() {
+        return "[unknown command]";
     }
 }

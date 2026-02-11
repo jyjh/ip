@@ -13,9 +13,14 @@ public class DeleteCommand extends Command {
     }
 
     @Override
+    public String getKeyword() {
+        return "delete";
+    }
+
+    @Override
     public void validateInput() throws IllegalArgumentException {
         if (args.length < 2) {
-            throw new IllegalArgumentException("Invalid format. Usage: delete [task-number]");
+            throw new IllegalArgumentException("Invalid format. Usage: " + getUsage());
         }
         try {
             int taskNum = Integer.parseInt(args[1]);
@@ -44,5 +49,10 @@ public class DeleteCommand extends Command {
 
         Task removedTask = tasks.remove(taskNum - 1);
         ui.printResponseMessage("Deleted task " + taskNum + ": " + removedTask.getDescription());
+    }
+
+    @Override
+    public String getUsage() {
+        return getKeyword() + " [task-number]";
     }
 }

@@ -12,6 +12,11 @@ public class ByeCommand extends Command {
     }
 
     @Override
+    public String getKeyword() {
+        return "bye";
+    }
+
+    @Override
     public void validateInput() throws IllegalArgumentException {
         // No arguments required for bye command
     }
@@ -19,5 +24,10 @@ public class ByeCommand extends Command {
     @Override
     public void execute(TaskList tasks, SilverUI ui) {
         ui.printResponseMessage("Farewell. Until next time.");
+    }
+
+    @Override
+    public String getUsage() {
+        return getKeyword();
     }
 }
