@@ -39,3 +39,6 @@ The entire transition from TUI to GUI was AI powered. This included
 Continuing the fully AI generated code, the following refactors to my code were done.
 - Changed commands to each have their own class.
 - Created an abstract command class for said commands to inherit from.
+- Created a class to store a static reference to all command classes
+- Changed Parser to pull the list from the CommandRegistry instead of using a manually updated switch case
+- Created a HelpCommand that also uses the CommandRegistry to automatically create a help command from all the usage strings of each command class.
