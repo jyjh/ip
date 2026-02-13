@@ -15,6 +15,7 @@ public abstract class Command {
      * @param args Command arguments
      */
     public Command(String[] args) {
+        assert args != null : "Command arguments array cannot be null";
         this.args = args;
     }
 

@@ -28,6 +28,8 @@ public class FindCommand extends Command {
 
     @Override
     public void execute(TaskList tasks, SilverUI ui) {
+        assert tasks != null : "TaskList cannot be null";
+        assert ui != null : "UI cannot be null";
         try {
             validateInput();
         } catch (IllegalArgumentException e) {
@@ -37,6 +39,7 @@ public class FindCommand extends Command {
 
         String keyword = args[1];
         TaskList foundTasks = tasks.findTasks(keyword);
+        assert foundTasks != null : "Found tasks list cannot be null";
         if (foundTasks.size() == 0) {
             ui.printResponseMessage("No tasks found matching the keyword: " + keyword);
             return;

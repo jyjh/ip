@@ -34,6 +34,8 @@ public class DeleteCommand extends Command {
 
     @Override
     public void execute(TaskList tasks, SilverUI ui) {
+        assert tasks != null : "TaskList cannot be null";
+        assert ui != null : "UI cannot be null";
         try {
             validateInput();
         } catch (IllegalArgumentException e) {
@@ -48,6 +50,7 @@ public class DeleteCommand extends Command {
         }
 
         Task removedTask = tasks.remove(taskNum - 1);
+        assert removedTask != null : "Removed task cannot be null";
         ui.printResponseMessage("Deleted task " + taskNum + ": " + removedTask.getDescription());
     }
 
