@@ -26,7 +26,7 @@ public class Deadline extends Task {
      */
     public static Deadline loadFromState(String loadState) {
         assert loadState != null && !loadState.isEmpty() : "Load state string cannot be null or empty";
-        String[] parts = loadState.split("\\|", 4);
+        String[] parts = loadState.split("\\|");
         assert parts.length >= 4 : "Load state string must have at least 4 parts for Deadline";
         assert "D".equals(parts[0]) : "Load state string must start with 'D' for Deadline";
         
@@ -34,6 +34,14 @@ public class Deadline extends Task {
         if (parts[1].equals("1")) {
             deadline.mark();
         }
+
+        // Load notes from remaining parts
+        for (int i = 4; i < parts.length; i++) {
+            if (!parts[i].trim().isEmpty()) {
+                deadline.addNote(Note.loadFromState(parts[i]));
+            }
+        }
+
         return deadline;
     }
 
