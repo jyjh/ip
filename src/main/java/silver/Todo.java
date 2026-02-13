@@ -13,8 +13,13 @@ public class Todo extends Task {
      * @param loadState
      */
     public static Todo loadFromState(String loadState) {
-        Todo todo = new Todo(loadState.split("\\|", 4)[2]);
-        if (loadState.split("\\|", 4)[1].equals("1")) {
+        assert loadState != null && !loadState.isEmpty() : "Load state string cannot be null or empty";
+        String[] parts = loadState.split("\\|", 4);
+        assert parts.length >= 3 : "Load state string must have at least 3 parts for Todo";
+        assert "T".equals(parts[0]) : "Load state string must start with 'T' for Todo";
+
+        Todo todo = new Todo(parts[2]);
+        if (parts[1].equals("1")) {
             todo.mark();
         }
         return todo;

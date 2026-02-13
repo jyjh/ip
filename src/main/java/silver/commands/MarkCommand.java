@@ -33,6 +33,8 @@ public class MarkCommand extends Command {
 
     @Override
     public void execute(TaskList tasks, SilverUI ui) {
+        assert tasks != null : "TaskList cannot be null";
+        assert ui != null : "UI cannot be null";
         try {
             validateInput();
         } catch (IllegalArgumentException e) {

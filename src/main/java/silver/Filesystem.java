@@ -23,6 +23,7 @@ public class Filesystem {
      * @return true if the file exists, false otherwise
      */
     public static boolean fileExists(String filePath) {
+        assert filePath != null && !filePath.trim().isEmpty() : "File path cannot be null or empty";
         File file = new File(filePath);
         return file.exists();
     }
@@ -35,6 +36,7 @@ public class Filesystem {
      * @return the initialized File object
      */
     public static File initializeFile(String filePath) {
+        assert filePath != null && !filePath.trim().isEmpty() : "File path cannot be null or empty";
         try {
             File file = new File(filePath);
             if (!file.exists()) {
@@ -44,7 +46,9 @@ public class Filesystem {
         } catch (Exception e) {
             System.out.println("Error initializing filesystem: " + e.getMessage());
         }
-        return new File(filePath);
+        File result = new File(filePath);
+        assert result != null : "File initialization should not return null";
+        return result;
     }
 
     /**
@@ -53,8 +57,11 @@ public class Filesystem {
      * @param data
      */
     public static void saveData(File file, TaskList data) {
+        assert file != null : "File cannot be null when saving data";
+        assert data != null : "TaskList data cannot be null when saving";
         try (BufferedWriter writer = new BufferedWriter(new java.io.FileWriter(file))) {
             for (Task task : data.getAllTasks()) {
+                assert task != null : "Task in TaskList cannot be null when saving";
                 writer.write(task.saveState());
                 writer.newLine();
             }
@@ -69,12 +76,15 @@ public class Filesystem {
      * @param file
      */
     public static TaskList loadData(File file) {
+        assert file != null : "File cannot be null when loading data";
         // Implementation for loading data from a file
         try (BufferedReader reader = new BufferedReader(new java.io.FileReader(file))) {
             ArrayList<Task> tasks = new ArrayList<>();
             String line;
             while ((line = reader.readLine()) != null) {
+                assert !line.trim().isEmpty() : "Line in file cannot be empty";
                 String[] parts = line.split("\\|", 2);
+                assert parts.length >= 1 : "Line must contain at least task type";
                 String taskType = parts[0];
                 switch (taskType) {
                 case "T":

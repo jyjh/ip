@@ -16,6 +16,7 @@ public class Deadline extends Task {
      */
     public Deadline(String description, LocalDate by) {
         super(description);
+        assert by != null : "Deadline date cannot be null";
         this.by = by;
     }
 
@@ -24,9 +25,13 @@ public class Deadline extends Task {
      * @param loadState
      */
     public static Deadline loadFromState(String loadState) {
-        Deadline deadline = new Deadline(loadState.split("\\|", 4)[2],
-            LocalDate.parse(loadState.split("\\|", 4)[3]));
-        if (loadState.split("\\|", 4)[1].equals("1")) {
+        assert loadState != null && !loadState.isEmpty() : "Load state string cannot be null or empty";
+        String[] parts = loadState.split("\\|", 4);
+        assert parts.length >= 4 : "Load state string must have at least 4 parts for Deadline";
+        assert "D".equals(parts[0]) : "Load state string must start with 'D' for Deadline";
+        
+        Deadline deadline = new Deadline(parts[2], LocalDate.parse(parts[3]));
+        if (parts[1].equals("1")) {
             deadline.mark();
         }
         return deadline;

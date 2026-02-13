@@ -12,6 +12,7 @@ public class Task {
      * @param description The description of the task.
      */
     public Task(String description) {
+        assert description != null && !description.trim().isEmpty() : "Task description cannot be null or empty";
         this.description = description;
         this.isDone = false;
     }
@@ -48,6 +49,7 @@ public class Task {
      * @return saveState string
      */
     public String saveState() {
+        assert description != null : "Description must not be null when saving state";
         return (isDone ? "1" : "0") + "|" + description;
     }
 }
