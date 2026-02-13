@@ -25,12 +25,14 @@ public class TaskList {
      * @return
      */
     public Task remove(int index) {
+        assert index >= 0 && index < tasks.size() : "Index must be within bounds of task list";
         Task removed = tasks.get(index);
         tasks.remove(index);
         return removed;
     }
 
     public Task get(int index) {
+        assert index >= 0 && index < tasks.size() : "Index must be within bounds of task list";
         return tasks.get(index);
     }
 
@@ -52,6 +54,7 @@ public class TaskList {
      * @return
      */
     public TaskList findTasks(String keyword) {
+        assert keyword != null : "Keyword cannot be null";
         TaskList foundTasks = new TaskList();
         for (Task task : tasks) {
             if (task.getDescription().contains(keyword)) {

@@ -30,6 +30,7 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    jvmArgs '-ea'  // Enable assertions for tests
 
     testLogging {
         events "passed", "skipped", "failed"
@@ -53,4 +54,5 @@ shadowJar {
 
 run{
     standardInput = System.in
+    jvmArgs '-ea'  // Enable assertions for application runs
 }

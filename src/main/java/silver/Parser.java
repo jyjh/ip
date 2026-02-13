@@ -18,8 +18,10 @@ public class Parser {
      * @return The Command object to execute
      */
     Command parse(String input) {
+        assert input != null && !input.trim().isEmpty() : "Input cannot be null or empty";
         String[] parts = input.trim().split(" ", 2);
         String command = parts[0].toLowerCase();
+        assert command != null && !command.isEmpty() : "Command keyword cannot be empty";
 
         // Store the full input for argument parsing
         String[] commandArgs = input.trim().split(" ");
