@@ -36,9 +36,14 @@ The entire transition from TUI to GUI was AI powered. This included
 
 ## Week 5
 
-Continuing the fully AI generated code, the following refactors to my code were done.
+Continuing with using fully AI generated code, the following refactors to my code were done.
+
 - Changed commands to each have their own class.
 - Created an abstract command class for said commands to inherit from.
 - Created a class to store a static reference to all command classes
 - Changed Parser to pull the list from the CommandRegistry instead of using a manually updated switch case
 - Created a HelpCommand that also uses the CommandRegistry to automatically create a help command from all the usage strings of each command class.
+- Created a custom WindowHandler class to handling moving window and resizing it, so that system decorations could be replaced with a custom implementation for aesthetic appeal.
+- Created message grouping functionality, so consecutive messages from the same user (just the bot for now) would be more tightly grouped together for visual clarity.
+
+The only human intervention was to verify that the generated code was accurate and to prompt the AI. This includes prompting the AI to refine it's own code further - such as reducing code duplication via creating new functions, or to fix it's own bugs.
