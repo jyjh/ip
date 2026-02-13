@@ -149,7 +149,7 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback {
         AnchorPane root = (AnchorPane) stage.getScene().getRoot();
 
         // Mouse moved: Determine cursor direction
-        root.setOnMouseMoved((MouseEvent event) -> {
+        root.addEventFilter(MouseEvent.MOUSE_MOVED, (MouseEvent event) -> {
             if (isMaximized) {
                 root.setCursor(javafx.scene.Cursor.DEFAULT);
                 return;
@@ -197,7 +197,7 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback {
         });
 
         // Mouse pressed: Record initial screen positions and set dragging flag
-        root.setOnMousePressed((MouseEvent event) -> {
+        root.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
             initialMouseScreenX = event.getScreenX();
             initialMouseScreenY = event.getScreenY();
             initialStageX = stage.getX();
@@ -208,7 +208,7 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback {
         });
 
         // Mouse dragged: Handle dragging or resizing based on direction
-        root.setOnMouseDragged((MouseEvent event) -> {
+        root.addEventFilter(MouseEvent.MOUSE_DRAGGED, (MouseEvent event) -> {
             if (isMaximized) {
                 return;
             }
@@ -226,7 +226,7 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback {
         });
 
         // Mouse exited: Reset cursor and direction only if not currently dragging
-        root.setOnMouseExited((MouseEvent event) -> {
+        root.addEventFilter(MouseEvent.MOUSE_EXITED, (MouseEvent event) -> {
             if (!isDragging) {
                 resizeDirection = ResizeDirection.NONE;
                 root.setCursor(javafx.scene.Cursor.DEFAULT);
@@ -234,7 +234,7 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback {
         });
 
         // Mouse released: Reset dragging flag
-        root.setOnMouseReleased((MouseEvent event) -> {
+        root.addEventFilter(MouseEvent.MOUSE_RELEASED, (MouseEvent event) -> {
             isDragging = false;
             resizeDirection = ResizeDirection.NONE;
             root.setCursor(javafx.scene.Cursor.DEFAULT);
