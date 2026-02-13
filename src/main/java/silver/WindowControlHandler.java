@@ -11,7 +11,9 @@ import javafx.stage.Stage;
  */
 public class WindowControlHandler {
 
-    // Resize direction enum
+    /**
+     * Enum for resize directions.
+     */
     public enum ResizeDirection {
         NONE, N, S, E, W, NE, NW, SE, SW, DRAG
     }
@@ -153,6 +155,48 @@ public class WindowControlHandler {
     }
 
     /**
+     * Resizes the window width by applying the delta, enforcing minimum width constraint.
+     *
+     * @param delta The amount to change the width by
+     */
+    private void resizeWidth(double delta) {
+        double newWidth = initialStageWidth + delta;
+        if (newWidth >= minWidth) {
+            stage.setWidth(newWidth);
+        }
+    }
+
+    /**
+     * Resizes the window height by applying the delta, enforcing minimum height constraint.
+     *
+     * @param delta The amount to change the height by
+     */
+    private void resizeHeight(double delta) {
+        double newHeight = initialStageHeight + delta;
+        if (newHeight >= minHeight) {
+            stage.setHeight(newHeight);
+        }
+    }
+
+    /**
+     * Moves the window's x position by the specified delta.
+     *
+     * @param delta The amount to move the x position
+     */
+    private void moveX(double delta) {
+        stage.setX(initialStageX + delta);
+    }
+
+    /**
+     * Moves the window's y position by the specified delta.
+     *
+     * @param delta The amount to move the y position
+     */
+    private void moveY(double delta) {
+        stage.setY(initialStageY + delta);
+    }
+
+    /**
      * Handles window resizing based on the current resize direction using screen coordinates.
      */
     private void handleResize(MouseEvent event) {
@@ -164,88 +208,52 @@ public class WindowControlHandler {
         switch (resizeDirection) {
         case E:
             // Right edge: only width changes
-            double newWidthE = initialStageWidth + deltaX;
-            if (newWidthE >= minWidth) {
-                stage.setWidth(newWidthE);
-            }
+            resizeWidth(deltaX);
             break;
 
         case W:
             // Left edge: both X and width change
-            double newWidthW = initialStageWidth - deltaX;
-            if (newWidthW >= minWidth) {
-                stage.setX(initialStageX + deltaX);
-                stage.setWidth(newWidthW);
-            }
+            moveX(deltaX);
+            resizeWidth(-deltaX);
             break;
 
         case S:
             // Bottom edge: only height changes
-            double newHeightS = initialStageHeight + deltaY;
-            if (newHeightS >= minHeight) {
-                stage.setHeight(newHeightS);
-            }
+            resizeHeight(deltaY);
             break;
 
         case N:
             // Top edge: both Y and height change
-            double newHeightN = initialStageHeight - deltaY;
-            if (newHeightN >= minHeight) {
-                stage.setY(initialStageY + deltaY);
-                stage.setHeight(newHeightN);
-            }
+            moveY(deltaY);
+            resizeHeight(-deltaY);
             break;
 
         case SE:
             // Bottom-right corner: width and height change
-            double newWidthSE = initialStageWidth + deltaX;
-            double newHeightSE = initialStageHeight + deltaY;
-            if (newWidthSE >= minWidth) {
-                stage.setWidth(newWidthSE);
-            }
-            if (newHeightSE >= minHeight) {
-                stage.setHeight(newHeightSE);
-            }
+            resizeWidth(deltaX);
+            resizeHeight(deltaY);
             break;
 
         case SW:
             // Bottom-left corner: X, width, and height change
-            double newWidthSW = initialStageWidth - deltaX;
-            double newHeightSW = initialStageHeight + deltaY;
-            if (newWidthSW >= minWidth) {
-                stage.setX(initialStageX + deltaX);
-                stage.setWidth(newWidthSW);
-            }
-            if (newHeightSW >= minHeight) {
-                stage.setHeight(newHeightSW);
-            }
+            moveX(deltaX);
+            resizeWidth(-deltaX);
+            resizeHeight(deltaY);
             break;
 
         case NE:
             // Top-right corner: Y, width, and height change
-            double newWidthNE = initialStageWidth + deltaX;
-            double newHeightNE = initialStageHeight - deltaY;
-            if (newWidthNE >= minWidth) {
-                stage.setWidth(newWidthNE);
-            }
-            if (newHeightNE >= minHeight) {
-                stage.setY(initialStageY + deltaY);
-                stage.setHeight(newHeightNE);
-            }
+            resizeWidth(deltaX);
+            moveY(deltaY);
+            resizeHeight(-deltaY);
             break;
 
         case NW:
             // Top-left corner: X, Y, width, and height change
-            double newWidthNW = initialStageWidth - deltaX;
-            double newHeightNW = initialStageHeight - deltaY;
-            if (newWidthNW >= minWidth) {
-                stage.setX(initialStageX + deltaX);
-                stage.setWidth(newWidthNW);
-            }
-            if (newHeightNW >= minHeight) {
-                stage.setY(initialStageY + deltaY);
-                stage.setHeight(newHeightNW);
-            }
+            moveX(deltaX);
+            moveY(deltaY);
+            resizeWidth(-deltaX);
+            resizeHeight(-deltaY);
             break;
 
         default:
