@@ -52,10 +52,10 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
 
     private ResizeDirection resizeDirection = ResizeDirection.NONE;
     private boolean isDragging = false;
-    private final int RESIZE_BORDER = 8;
-    private final int DRAG_HEIGHT = 30;
-    private final double MIN_WIDTH = 300;
-    private final double MIN_HEIGHT = 200;
+    private final int resizeBorder = 8;
+    private final int dragHeight = 30;
+    private final double minWidth = 300;
+    private final double minHeight = 200;
 
     /**
      * Initializes main window and sets up the Silver application.
@@ -63,16 +63,13 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
-        
         // Create users
         Image userImage = new Image(this.getClass().getResourceAsStream("/images/user.png"));
         Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/silver.png"));
         user = new User("User", userImage, User.Side.RIGHT);
         silverUser = new User("Silver", dukeImage, User.Side.LEFT);
-        
         // Create chat with this as callback
         chat = new Chat(this);
-        
         ui = new SilverGraphicalUI();
         ui.setMessageCallback(this);
         silver = new Silver(Silver.DATA_FILEPATH, ui);
@@ -173,31 +170,31 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
             // Determine resize direction
             resizeDirection = ResizeDirection.NONE;
 
-            if (y <= RESIZE_BORDER && x <= RESIZE_BORDER) {
+            if (y <= resizeBorder && x <= resizeBorder) {
                 resizeDirection = ResizeDirection.NW;
                 root.setCursor(javafx.scene.Cursor.NW_RESIZE);
-            } else if (y <= RESIZE_BORDER && x >= width - RESIZE_BORDER) {
+            } else if (y <= resizeBorder && x >= width - resizeBorder) {
                 resizeDirection = ResizeDirection.NE;
                 root.setCursor(javafx.scene.Cursor.NE_RESIZE);
-            } else if (y >= height - RESIZE_BORDER && x <= RESIZE_BORDER) {
+            } else if (y >= height - resizeBorder && x <= resizeBorder) {
                 resizeDirection = ResizeDirection.SW;
                 root.setCursor(javafx.scene.Cursor.SW_RESIZE);
-            } else if (y >= height - RESIZE_BORDER && x >= width - RESIZE_BORDER) {
+            } else if (y >= height - resizeBorder && x >= width - resizeBorder) {
                 resizeDirection = ResizeDirection.SE;
                 root.setCursor(javafx.scene.Cursor.SE_RESIZE);
-            } else if (y <= RESIZE_BORDER) {
+            } else if (y <= resizeBorder) {
                 resizeDirection = ResizeDirection.N;
                 root.setCursor(javafx.scene.Cursor.N_RESIZE);
-            } else if (y >= height - RESIZE_BORDER) {
+            } else if (y >= height - resizeBorder) {
                 resizeDirection = ResizeDirection.S;
                 root.setCursor(javafx.scene.Cursor.S_RESIZE);
-            } else if (x <= RESIZE_BORDER) {
+            } else if (x <= resizeBorder) {
                 resizeDirection = ResizeDirection.W;
                 root.setCursor(javafx.scene.Cursor.W_RESIZE);
-            } else if (x >= width - RESIZE_BORDER) {
+            } else if (x >= width - resizeBorder) {
                 resizeDirection = ResizeDirection.E;
                 root.setCursor(javafx.scene.Cursor.E_RESIZE);
-            } else if (y <= DRAG_HEIGHT) {
+            } else if (y <= dragHeight) {
                 resizeDirection = ResizeDirection.DRAG;
                 root.setCursor(javafx.scene.Cursor.DEFAULT);
             } else {
@@ -264,7 +261,7 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
         case E:
             // Right edge: only width changes
             double newWidthE = initialStageWidth + deltaX;
-            if (newWidthE >= MIN_WIDTH) {
+            if (newWidthE >= minWidth) {
                 stage.setWidth(newWidthE);
             }
             break;
@@ -272,7 +269,7 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
         case W:
             // Left edge: both X and width change
             double newWidthW = initialStageWidth - deltaX;
-            if (newWidthW >= MIN_WIDTH) {
+            if (newWidthW >= minWidth) {
                 stage.setX(initialStageX + deltaX);
                 stage.setWidth(newWidthW);
             }
@@ -281,7 +278,7 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
         case S:
             // Bottom edge: only height changes
             double newHeightS = initialStageHeight + deltaY;
-            if (newHeightS >= MIN_HEIGHT) {
+            if (newHeightS >= minHeight) {
                 stage.setHeight(newHeightS);
             }
             break;
@@ -289,7 +286,7 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
         case N:
             // Top edge: both Y and height change
             double newHeightN = initialStageHeight - deltaY;
-            if (newHeightN >= MIN_HEIGHT) {
+            if (newHeightN >= minHeight) {
                 stage.setY(initialStageY + deltaY);
                 stage.setHeight(newHeightN);
             }
@@ -299,10 +296,10 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
             // Bottom-right corner: width and height change
             double newWidthSE = initialStageWidth + deltaX;
             double newHeightSE = initialStageHeight + deltaY;
-            if (newWidthSE >= MIN_WIDTH) {
+            if (newWidthSE >= minWidth) {
                 stage.setWidth(newWidthSE);
             }
-            if (newHeightSE >= MIN_HEIGHT) {
+            if (newHeightSE >= minHeight) {
                 stage.setHeight(newHeightSE);
             }
             break;
@@ -311,11 +308,11 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
             // Bottom-left corner: X, width, and height change
             double newWidthSW = initialStageWidth - deltaX;
             double newHeightSW = initialStageHeight + deltaY;
-            if (newWidthSW >= MIN_WIDTH) {
+            if (newWidthSW >= minWidth) {
                 stage.setX(initialStageX + deltaX);
                 stage.setWidth(newWidthSW);
             }
-            if (newHeightSW >= MIN_HEIGHT) {
+            if (newHeightSW >= minHeight) {
                 stage.setHeight(newHeightSW);
             }
             break;
@@ -324,10 +321,10 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
             // Top-right corner: Y, width, and height change
             double newWidthNE = initialStageWidth + deltaX;
             double newHeightNE = initialStageHeight - deltaY;
-            if (newWidthNE >= MIN_WIDTH) {
+            if (newWidthNE >= minWidth) {
                 stage.setWidth(newWidthNE);
             }
-            if (newHeightNE >= MIN_HEIGHT) {
+            if (newHeightNE >= minHeight) {
                 stage.setY(initialStageY + deltaY);
                 stage.setHeight(newHeightNE);
             }
@@ -337,11 +334,11 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
             // Top-left corner: X, Y, width, and height change
             double newWidthNW = initialStageWidth - deltaX;
             double newHeightNW = initialStageHeight - deltaY;
-            if (newWidthNW >= MIN_WIDTH) {
+            if (newWidthNW >= minWidth) {
                 stage.setX(initialStageX + deltaX);
                 stage.setWidth(newWidthNW);
             }
-            if (newHeightNW >= MIN_HEIGHT) {
+            if (newHeightNW >= minHeight) {
                 stage.setY(initialStageY + deltaY);
                 stage.setHeight(newHeightNW);
             }
@@ -359,13 +356,10 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        
         // Display user input via Chat
         chat.addMessage(user, input);
-
         // Process command - responses will be displayed via callback
         silver.processCommand(input);
-
         userInput.clear();
     }
 

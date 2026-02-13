@@ -16,7 +16,12 @@ public class Chat {
         private final User user;
         private final String text;
         private final DialogBox.MessagePosition position;
-
+        /**
+         * Creates a new Message instance.
+         * @param user
+         * @param text
+         * @param position
+         */
         public Message(User user, String text, DialogBox.MessagePosition position) {
             this.user = user;
             this.text = text;
@@ -80,21 +85,17 @@ public class Chat {
      */
     public void addMessage(User user, String text) {
         DialogBox.MessagePosition position = determineMessagePosition(user);
-        
         // Update previous message if needed (when continuing a group)
         if (previousUser != null && previousUser.equals(user)) {
             updatePreviousMessagePosition();
         }
-        
         // Create and add the new message
         Message message = new Message(user, text, position);
         messageLog.add(message);
-        
         // Notify callback of new message
         if (callback != null) {
             callback.onMessageAdded(message);
         }
-        
         previousUser = user;
     }
 
@@ -109,7 +110,6 @@ public class Chat {
             // Different user or first message - standalone
             return DialogBox.MessagePosition.STANDALONE;
         }
-        
         // Same user as previous - new message is always last in group
         return DialogBox.MessagePosition.LAST_IN_GROUP;
     }
@@ -122,11 +122,9 @@ public class Chat {
         if (messageLog.isEmpty()) {
             return;
         }
-        
         int lastIndex = messageLog.size() - 1;
         Message previousMessage = messageLog.get(lastIndex);
         DialogBox.MessagePosition currentPosition = previousMessage.getPosition();
-        
         // Determine new position
         DialogBox.MessagePosition newPosition;
         switch (currentPosition) {
@@ -141,17 +139,14 @@ public class Chat {
         default:
             newPosition = currentPosition;
         }
-        
         // Create updated message
         Message updatedMessage = new Message(
             previousMessage.getUser(),
             previousMessage.getText(),
             newPosition
         );
-        
         // Update message log
         messageLog.set(lastIndex, updatedMessage);
-        
         // Notify callback of update
         if (callback != null) {
             callback.onMessageUpdated(updatedMessage);

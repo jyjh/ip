@@ -30,10 +30,10 @@ public class DialogBox extends HBox {
      * Represents the position of a message within a group of consecutive messages from the same speaker.
      */
     public enum MessagePosition {
-        STANDALONE,      // Message is alone in its group
-        FIRST_IN_GROUP,  // First message in a group of consecutive messages
+        STANDALONE, // Message is alone in its group
+        FIRST_IN_GROUP, // First message in a group of consecutive messages
         MIDDLE_IN_GROUP, // Middle message in a group of consecutive messages
-        LAST_IN_GROUP    // Last message in a group of consecutive messages
+        LAST_IN_GROUP // Last message in a group of consecutive messages
     }
 
     private DialogBox(String text, Image img, MessagePosition position) {
@@ -50,7 +50,6 @@ public class DialogBox extends HBox {
         displayPicture.setImage(img);
         dialog.setWrapText(true);
         dialog.setTextOverrun(OverrunStyle.CLIP);
-        
         // Apply bot styling based on message position (default, will be overridden for user messages)
         applyPositionStyling(position);
     }
@@ -65,7 +64,6 @@ public class DialogBox extends HBox {
         getChildren().setAll(tmp);
         setAlignment(Pos.TOP_LEFT);
     }
-    
     /**
      * Styles the dialog box as a user message (green bubble, right-aligned).
      * Also applies user-specific position-based styling.
@@ -74,7 +72,6 @@ public class DialogBox extends HBox {
         setAlignment(Pos.TOP_RIGHT);
         applyUserPositionStyling(position);
     }
-    
     /**
      * Applies styling based on the message's position within a group.
      * This controls avatar visibility, bubble corner radius, and padding.
@@ -113,9 +110,11 @@ public class DialogBox extends HBox {
             dialog.setStyle("-fx-background-color: #182533; -fx-background-radius: 2 2 10 10; "
                 + "-fx-text-fill: white; -fx-wrap-text: true; -fx-padding: 10 15 10 15;");
             break;
+        default:
+            // Do nothing
+            break;
         }
     }
-    
     /**
      * Applies user message styling based on the message's position within a group.
      */
@@ -153,9 +152,11 @@ public class DialogBox extends HBox {
             dialog.setStyle("-fx-background-color: #2b5278; -fx-background-radius: 2 2 10 10; "
                 + "-fx-text-fill: white; -fx-wrap-text: true; -fx-padding: 10 15 10 15;");
             break;
+        default:
+            // Do nothing
+            break;
         }
     }
-    
     /**
      * Creates a dialog box for a given user with the specified message and position.
      * The dialog box styling and alignment are determined by the user's side (LEFT or RIGHT).
@@ -167,24 +168,20 @@ public class DialogBox extends HBox {
      */
     public static DialogBox getDialog(User user, String text, MessagePosition position) {
         var db = new DialogBox(text, user.getProfilePicture(), position);
-        
         // Style and position based on user's side
         if (user.getSide() == User.Side.RIGHT) {
             db.styleAsUserMessage(position);
         } else {
             db.flip();
         }
-        
         return db;
     }
-    
     /**
      * Gets the dialog label containing the message text.
      */
     public Label getDialogLabel() {
         return dialog;
     }
-    
     /**
      * Gets the display picture (avatar) ImageView.
      */
