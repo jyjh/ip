@@ -13,7 +13,8 @@ import javafx.stage.Stage;
 /**
  * Controller for the main GUI.
  */
-public class MainWindow extends AnchorPane implements SilverUI.MessageCallback {
+public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, Chat.ChatCallback {
+
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -25,9 +26,10 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback {
 
     private Silver silver;
     private SilverGraphicalUI ui;
+    private Chat chat;
 
-    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/user.png"));
-    private Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/silver.png"));
+    private User user;
+    private User silverUser;
     private Stage stage;
     private boolean isMaximized = false;
     private double previousWidth = 0;
@@ -61,6 +63,16 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback {
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+        
+        // Create users
+        Image userImage = new Image(this.getClass().getResourceAsStream("/images/user.png"));
+        Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/silver.png"));
+        user = new User("User", userImage, User.Side.RIGHT);
+        silverUser = new User("Silver", dukeImage, User.Side.LEFT);
+        
+        // Create chat with this as callback
+        chat = new Chat(this);
+        
         ui = new SilverGraphicalUI();
         ui.setMessageCallback(this);
         silver = new Silver(Silver.DATA_FILEPATH, ui);
@@ -76,10 +88,8 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback {
 
     @Override
     public void onMessage(String message) {
-        // Add Silver's response message immediately as it's generated
-        dialogContainer.getChildren().add(
-            DialogBox.getSilverDialog(message, dukeImage)
-        );
+        // Add Silver's response message via Chat
+        chat.addMessage(silverUser, message);
     }
 
     /**
@@ -343,21 +353,47 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback {
     }
 
     /**
-     * Creates two dialog boxes, one echoing user input and the other containing Silver's reply and then appends them to
-     * the dialog container. Clears the user input after processing.
+     * Creates a dialog box for user input and then processes the command.
+     * Clears the user input after processing.
      */
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-
-        // Display user input immediately
-        dialogContainer.getChildren().add(
-            DialogBox.getUserDialog(input, userImage)
-        );
+        
+        // Display user input via Chat
+        chat.addMessage(user, input);
 
         // Process command - responses will be displayed via callback
         silver.processCommand(input);
 
         userInput.clear();
+    }
+
+    // Chat.ChatCallback implementation
+
+    @Override
+    public void onMessageAdded(Chat.Message message) {
+        // Add new dialog box to container
+        dialogContainer.getChildren().add(
+            DialogBox.getDialog(
+                message.getUser(),
+                message.getText(),
+                message.getPosition()
+            )
+        );
+    }
+
+    @Override
+    public void onMessageUpdated(Chat.Message message) {
+        // Replace the last dialog box with updated version
+        int lastIndex = dialogContainer.getChildren().size() - 1;
+        if (lastIndex >= 0) {
+            DialogBox updatedDialog = DialogBox.getDialog(
+                message.getUser(),
+                message.getText(),
+                message.getPosition()
+            );
+            dialogContainer.getChildren().set(lastIndex, updatedDialog);
+        }
     }
 }
