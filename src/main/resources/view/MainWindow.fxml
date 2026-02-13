@@ -11,20 +11,50 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity"
-            minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="700.0" prefWidth="500.0"
+<AnchorPane maxHeight="Infinity" maxWidth="Infinity"
+            minHeight="200.0" minWidth="300.0"
+            prefHeight="600.0" prefWidth="500.0"
             style="-fx-background-color: #1d232a;"
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="silver.MainWindow">
     <children>
+        <!-- Custom Title Bar -->
+        <HBox alignment="CENTER_RIGHT"
+              prefHeight="30.0"
+              spacing="5.0"
+              style="-fx-background-color: #1a2029; -fx-padding: 0 5 0 10;"
+              AnchorPane.leftAnchor="0.0"
+              AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+            <children>
+                <Label style="-fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;" text="Silver" HBox.hgrow="ALWAYS" />
+                <Button onAction="#handleMinimize"
+                        mnemonicParsing="false"
+                        prefHeight="20.0" prefWidth="30.0"
+                        style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-cursor: hand; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 0;"
+                        text="−" />
+                <Button onAction="#handleMaximize"
+                        mnemonicParsing="false"
+                        prefHeight="20.0" prefWidth="30.0"
+                        style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-cursor: hand; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 0;"
+                        text="□" />
+                <Button onAction="#handleClose"
+                        mnemonicParsing="false"
+                        prefHeight="20.0" prefWidth="30.0"
+                        style="-fx-background-color: #e81123; -fx-border-color: transparent; -fx-cursor: hand; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 0; -fx-background-radius: 0;"
+                        text="✕" />
+            </children>
+        </HBox>
+
         <!-- Header Bar -->
         <HBox alignment="CENTER_LEFT"
-              layoutX="0.0" layoutY="0.0"
-              prefHeight="60.0" prefWidth="500.0"
+              prefHeight="60.0"
               spacing="10.0"
-              style="-fx-background-color: #2b5278; -fx-padding: 0 15 0 15;">
+              style="-fx-background-color: #2b5278; -fx-padding: 0 15 0 15;"
+              AnchorPane.leftAnchor="0.0"
+              AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="30.0">
             <children>
                 <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                     <image>
@@ -43,13 +73,16 @@
         <!-- Chat Area -->
         <ScrollPane fx:id="scrollPane"
                     hbarPolicy="NEVER"
-                    layoutX="0.0" layoutY="60.0"
-                    prefHeight="580.0" prefWidth="500.0"
+                    fitToWidth="true"
+                    fitToHeight="true"
                     style="-fx-background-color: #0f1316; -fx-border-color: #2b5278;"
-                    vvalue="1.0">
+                    vvalue="1.0"
+                    AnchorPane.bottomAnchor="60.0"
+                    AnchorPane.leftAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0"
+                    AnchorPane.topAnchor="90.0">
             <content>
                 <VBox fx:id="dialogContainer"
-                      prefHeight="575.0" prefWidth="485.0"
                       spacing="5.0"
                       style="-fx-background-color: #0f1316; -fx-padding: 10;">
                     <padding>
@@ -61,16 +94,19 @@
 
         <!-- Input Area -->
         <HBox alignment="CENTER_LEFT"
-              layoutX="0.0" layoutY="640.0"
-              prefHeight="60.0" prefWidth="500.0"
+              prefHeight="60.0"
               spacing="10.0"
-              style="-fx-background-color: #17212b; -fx-padding: 10 15 10 15;">
+              style="-fx-background-color: #17212b; -fx-padding: 10 15 10 15;"
+              AnchorPane.bottomAnchor="0.0"
+              AnchorPane.leftAnchor="0.0"
+              AnchorPane.rightAnchor="0.0">
             <children>
                 <TextField fx:id="userInput"
                            onAction="#handleUserInput"
-                           prefHeight="40.0" prefWidth="370.0"
+                           prefHeight="40.0"
                            promptText="Type a message..."
-                           style="-fx-background-color: #242f3d; -fx-background-radius: 20; -fx-text-fill: white; -fx-prompt-text-fill: #768693; -fx-border-color: transparent; -fx-padding: 0 15 0 15;" />
+                           style="-fx-background-color: #242f3d; -fx-background-radius: 20; -fx-text-fill: white; -fx-prompt-text-fill: #768693; -fx-border-color: transparent; -fx-padding: 0 15 0 15;"
+                           HBox.hgrow="ALWAYS" />
                 <Button fx:id="sendButton"
                         mnemonicParsing="false"
                         onAction="#handleUserInput"
