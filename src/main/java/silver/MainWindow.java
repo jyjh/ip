@@ -5,7 +5,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -27,6 +26,7 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
     private Silver silver;
     private SilverGraphicalUI ui;
     private Chat chat;
+    private WindowControlHandler windowControlHandler;
 
     private User user;
     private User silverUser;
@@ -36,26 +36,6 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
     private double previousHeight = 0;
     private double previousX = 0;
     private double previousY = 0;
-
-    // Screen coordinates for mouse operations
-    private double initialMouseScreenX = 0;
-    private double initialMouseScreenY = 0;
-    private double initialStageX = 0;
-    private double initialStageY = 0;
-    private double initialStageWidth = 0;
-    private double initialStageHeight = 0;
-
-    // Resize direction enum
-    private enum ResizeDirection {
-        NONE, N, S, E, W, NE, NW, SE, SW, DRAG
-    }
-
-    private ResizeDirection resizeDirection = ResizeDirection.NONE;
-    private boolean isDragging = false;
-    private final int resizeBorder = 8;
-    private final int dragHeight = 30;
-    private final double minWidth = 300;
-    private final double minHeight = 200;
 
     /**
      * Initializes main window and sets up the Silver application.
@@ -78,7 +58,8 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
         // Setup window controls after a short delay to ensure stage is set
         javafx.application.Platform.runLater(() -> {
             if (stage != null) {
-                setupWindowControls();
+                windowControlHandler = new WindowControlHandler();
+                windowControlHandler.setup(stage);
             }
         });
     }
@@ -146,207 +127,6 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
     private void handleClose() {
         handleWindowClose();
         stage.close();
-    }
-
-    /**
-     * Makes the window draggable and resizable by handling mouse events.
-     */
-    @FXML
-    private void setupWindowControls() {
-        AnchorPane root = (AnchorPane) stage.getScene().getRoot();
-
-        // Mouse moved: Determine cursor direction
-        root.addEventFilter(MouseEvent.MOUSE_MOVED, (MouseEvent event) -> {
-            if (isMaximized) {
-                root.setCursor(javafx.scene.Cursor.DEFAULT);
-                return;
-            }
-
-            double x = event.getX();
-            double y = event.getY();
-            double width = root.getWidth();
-            double height = root.getHeight();
-
-            // Determine resize direction
-            resizeDirection = ResizeDirection.NONE;
-
-            if (y <= resizeBorder && x <= resizeBorder) {
-                resizeDirection = ResizeDirection.NW;
-                root.setCursor(javafx.scene.Cursor.NW_RESIZE);
-            } else if (y <= resizeBorder && x >= width - resizeBorder) {
-                resizeDirection = ResizeDirection.NE;
-                root.setCursor(javafx.scene.Cursor.NE_RESIZE);
-            } else if (y >= height - resizeBorder && x <= resizeBorder) {
-                resizeDirection = ResizeDirection.SW;
-                root.setCursor(javafx.scene.Cursor.SW_RESIZE);
-            } else if (y >= height - resizeBorder && x >= width - resizeBorder) {
-                resizeDirection = ResizeDirection.SE;
-                root.setCursor(javafx.scene.Cursor.SE_RESIZE);
-            } else if (y <= resizeBorder) {
-                resizeDirection = ResizeDirection.N;
-                root.setCursor(javafx.scene.Cursor.N_RESIZE);
-            } else if (y >= height - resizeBorder) {
-                resizeDirection = ResizeDirection.S;
-                root.setCursor(javafx.scene.Cursor.S_RESIZE);
-            } else if (x <= resizeBorder) {
-                resizeDirection = ResizeDirection.W;
-                root.setCursor(javafx.scene.Cursor.W_RESIZE);
-            } else if (x >= width - resizeBorder) {
-                resizeDirection = ResizeDirection.E;
-                root.setCursor(javafx.scene.Cursor.E_RESIZE);
-            } else if (y <= dragHeight) {
-                resizeDirection = ResizeDirection.DRAG;
-                root.setCursor(javafx.scene.Cursor.DEFAULT);
-            } else {
-                resizeDirection = ResizeDirection.NONE;
-                root.setCursor(javafx.scene.Cursor.DEFAULT);
-            }
-        });
-
-        // Mouse pressed: Record initial screen positions and set dragging flag
-        root.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
-            initialMouseScreenX = event.getScreenX();
-            initialMouseScreenY = event.getScreenY();
-            initialStageX = stage.getX();
-            initialStageY = stage.getY();
-            initialStageWidth = stage.getWidth();
-            initialStageHeight = stage.getHeight();
-            isDragging = true;
-        });
-
-        // Mouse dragged: Handle dragging or resizing based on direction
-        root.addEventFilter(MouseEvent.MOUSE_DRAGGED, (MouseEvent event) -> {
-            if (isMaximized) {
-                return;
-            }
-
-            if (resizeDirection == ResizeDirection.DRAG) {
-                // Drag window using screen coordinates
-                double deltaX = event.getScreenX() - initialMouseScreenX;
-                double deltaY = event.getScreenY() - initialMouseScreenY;
-                stage.setX(initialStageX + deltaX);
-                stage.setY(initialStageY + deltaY);
-            } else if (resizeDirection != ResizeDirection.NONE) {
-                // Resize window using screen coordinates
-                handleResize(event);
-            }
-        });
-
-        // Mouse exited: Reset cursor and direction only if not currently dragging
-        root.addEventFilter(MouseEvent.MOUSE_EXITED, (MouseEvent event) -> {
-            if (!isDragging) {
-                resizeDirection = ResizeDirection.NONE;
-                root.setCursor(javafx.scene.Cursor.DEFAULT);
-            }
-        });
-
-        // Mouse released: Reset dragging flag
-        root.addEventFilter(MouseEvent.MOUSE_RELEASED, (MouseEvent event) -> {
-            isDragging = false;
-            resizeDirection = ResizeDirection.NONE;
-            root.setCursor(javafx.scene.Cursor.DEFAULT);
-        });
-    }
-
-    /**
-     * Handles window resizing based on the current resize direction using screen coordinates.
-     */
-    private void handleResize(MouseEvent event) {
-        double currentScreenX = event.getScreenX();
-        double currentScreenY = event.getScreenY();
-        double deltaX = currentScreenX - initialMouseScreenX;
-        double deltaY = currentScreenY - initialMouseScreenY;
-
-        switch (resizeDirection) {
-        case E:
-            // Right edge: only width changes
-            double newWidthE = initialStageWidth + deltaX;
-            if (newWidthE >= minWidth) {
-                stage.setWidth(newWidthE);
-            }
-            break;
-
-        case W:
-            // Left edge: both X and width change
-            double newWidthW = initialStageWidth - deltaX;
-            if (newWidthW >= minWidth) {
-                stage.setX(initialStageX + deltaX);
-                stage.setWidth(newWidthW);
-            }
-            break;
-
-        case S:
-            // Bottom edge: only height changes
-            double newHeightS = initialStageHeight + deltaY;
-            if (newHeightS >= minHeight) {
-                stage.setHeight(newHeightS);
-            }
-            break;
-
-        case N:
-            // Top edge: both Y and height change
-            double newHeightN = initialStageHeight - deltaY;
-            if (newHeightN >= minHeight) {
-                stage.setY(initialStageY + deltaY);
-                stage.setHeight(newHeightN);
-            }
-            break;
-
-        case SE:
-            // Bottom-right corner: width and height change
-            double newWidthSE = initialStageWidth + deltaX;
-            double newHeightSE = initialStageHeight + deltaY;
-            if (newWidthSE >= minWidth) {
-                stage.setWidth(newWidthSE);
-            }
-            if (newHeightSE >= minHeight) {
-                stage.setHeight(newHeightSE);
-            }
-            break;
-
-        case SW:
-            // Bottom-left corner: X, width, and height change
-            double newWidthSW = initialStageWidth - deltaX;
-            double newHeightSW = initialStageHeight + deltaY;
-            if (newWidthSW >= minWidth) {
-                stage.setX(initialStageX + deltaX);
-                stage.setWidth(newWidthSW);
-            }
-            if (newHeightSW >= minHeight) {
-                stage.setHeight(newHeightSW);
-            }
-            break;
-
-        case NE:
-            // Top-right corner: Y, width, and height change
-            double newWidthNE = initialStageWidth + deltaX;
-            double newHeightNE = initialStageHeight - deltaY;
-            if (newWidthNE >= minWidth) {
-                stage.setWidth(newWidthNE);
-            }
-            if (newHeightNE >= minHeight) {
-                stage.setY(initialStageY + deltaY);
-                stage.setHeight(newHeightNE);
-            }
-            break;
-
-        case NW:
-            // Top-left corner: X, Y, width, and height change
-            double newWidthNW = initialStageWidth - deltaX;
-            double newHeightNW = initialStageHeight - deltaY;
-            if (newWidthNW >= minWidth) {
-                stage.setX(initialStageX + deltaX);
-                stage.setWidth(newWidthNW);
-            }
-            if (newHeightNW >= minHeight) {
-                stage.setY(initialStageY + deltaY);
-                stage.setHeight(newHeightNW);
-            }
-            break;
-
-        default:
-            break;
-        }
     }
 
     /**
