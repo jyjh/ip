@@ -1,11 +1,12 @@
 package silver.commands;
 
+import silver.Note;
 import silver.SilverUI;
 import silver.Task;
 import silver.TaskList;
 
 /**
- * Command to view a specific task and all its attached notes.
+ * Command to view a specific task and its attached note.
  */
 public class ViewCommand extends Command {
     public ViewCommand(String[] args) {
@@ -41,11 +42,13 @@ public class ViewCommand extends Command {
             }
 
             Task task = tasks.get(taskIndex - 1);
+            Note note = task.hasNote() ? tasks.getNote(task.getNoteUid()) : null;
+
             ui.printDivider();
             ui.printResponseMessage("Task " + taskIndex + ":");
-            ui.printResponseMessage(task.toFullString());
-            if (!task.hasNotes()) {
-                ui.printResponseMessage("  No notes attached.");
+            ui.printResponseMessage(task.toFullString(note));
+            if (!task.hasNote()) {
+                ui.printResponseMessage("  No note attached.");
             }
             ui.printDivider();
 

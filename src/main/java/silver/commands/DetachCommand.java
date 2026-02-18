@@ -1,12 +1,12 @@
 package silver.commands;
 
-import silver.Note;
 import silver.SilverUI;
 import silver.Task;
 import silver.TaskList;
 
 /**
- * Command to detach (remove) a note from a task.
+ * Command to detach a note from a task.
+ * The note is immediately deleted from storage when detached.
  */
 public class DetachCommand extends Command {
     public DetachCommand(String[] args) {
@@ -20,7 +20,7 @@ public class DetachCommand extends Command {
 
     @Override
     public void validateInput() throws IllegalArgumentException {
-        if (args.length < 3) {
+        if (args.length != 2) {
             throw new IllegalArgumentException("Invalid format. Usage: " + getUsage());
         }
     }
@@ -42,27 +42,30 @@ public class DetachCommand extends Command {
             }
 
             Task task = tasks.get(taskIndex - 1);
-            if (!task.hasNotes()) {
-                ui.printResponseMessage("Task " + taskIndex + " has no notes to detach.");
+
+            if (!task.hasNote()) {
+                ui.printResponseMessage("Task " + taskIndex + " does not have a note attached.");
                 return;
             }
 
-            int noteIndex = Integer.parseInt(args[2]);
-            if (noteIndex < 1 || noteIndex > task.getNoteCount()) {
-                ui.printResponseMessage("Invalid note index. Please provide a number between 1 and " + task.getNoteCount() + ".");
-                return;
-            }
+            // Get the note UID before removing
+            String noteUid = task.getNoteUid();
 
-            Note removedNote = task.removeNote(noteIndex);
-            ui.printResponseMessage("Detached note from task " + taskIndex + ": \"" + removedNote + "\"");
+            // Remove note from task
+            task.removeNoteUid();
+
+            // Delete note from storage
+            tasks.removeNote(noteUid);
+
+            ui.printResponseMessage("Detached and deleted note from task " + taskIndex + ".");
 
         } catch (NumberFormatException e) {
-            ui.printResponseMessage("Invalid index. Please provide valid numbers for task and note indices.");
+            ui.printResponseMessage("Invalid task index. Please provide a valid number.");
         }
     }
 
     @Override
     public String getUsage() {
-        return getKeyword() + " <task-index> <note-index>";
+        return getKeyword() + " <task-index>";
     }
 }

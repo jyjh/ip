@@ -1,20 +1,31 @@
 package silver;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-
-
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Provides utility methods for file operations such as checking existence,
- * initializing files, saving and loading data.
+ * Provides utility methods for file operations using JSON format.
  */
 public class Filesystem {
+
+    private static final Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .registerTypeAdapter(Task.class, new TaskAdapter())
+            .create();
 
     /**
      * Checks if a file exists at the specified file path.
@@ -52,61 +63,79 @@ public class Filesystem {
     }
 
     /**
-     * Saves the given TaskList data to the specified file.
-     * @param file
-     * @param data
+     * Saves tasks to a JSON file.
+     * @param file the file to save to
+     * @param tasks the list of tasks to save
      */
-    public static void saveData(File file, TaskList data) {
-        assert file != null : "File cannot be null when saving data";
-        assert data != null : "TaskList data cannot be null when saving";
-        try (BufferedWriter writer = new BufferedWriter(new java.io.FileWriter(file))) {
-            for (Task task : data.getAllTasks()) {
-                assert task != null : "Task in TaskList cannot be null when saving";
-                writer.write(task.saveState());
-                writer.newLine();
-            }
-        } catch (Exception e) {
-            System.out.println("Error saving data to filesystem: " + e.getMessage());
+    public static void saveTasks(File file, List<Task> tasks) {
+        assert file != null : "File cannot be null when saving tasks";
+        assert tasks != null : "Task list cannot be null when saving";
+        
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            Type taskListType = new TypeToken<ArrayList<Task>>() {}.getType();
+            gson.toJson(tasks, taskListType, writer);
+        } catch (IOException e) {
+            System.out.println("Error saving tasks to filesystem: " + e.getMessage());
         }
-
     }
 
     /**
-     * Loads TaskList data from the specified file.
-     * @param file
+     * Loads tasks from a JSON file.
+     * @param file the file to load from
+     * @return the list of tasks
      */
-    public static TaskList loadData(File file) {
-        assert file != null : "File cannot be null when loading data";
-        // Implementation for loading data from a file
-        try (BufferedReader reader = new BufferedReader(new java.io.FileReader(file))) {
-            ArrayList<Task> tasks = new ArrayList<>();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                assert !line.trim().isEmpty() : "Line in file cannot be empty";
-                String[] parts = line.split("\\|", 2);
-                assert parts.length >= 1 : "Line must contain at least task type";
-                String taskType = parts[0];
-                switch (taskType) {
-                case "T":
-                    tasks.add(Todo.loadFromState(line));
-                    break;
-                case "D":
-                    tasks.add(Deadline.loadFromState(line));
-                    break;
-                case "E":
-                    tasks.add(Events.loadFromState(line));
-                    break;
-                default:
-                    System.out.println("Unknown task type in saved data: " + taskType);
-                    break;
-                }
-            }
-            TaskList taskList = new TaskList();
-            taskList.setTasks(tasks);
-            return taskList;
-        } catch (Exception e) {
-            System.out.println("Error loading data from filesystem: " + e.getMessage());
-            return new TaskList();
+    public static List<Task> loadTasks(File file) {
+        assert file != null : "File cannot be null when loading tasks";
+        
+        if (!file.exists() || file.length() == 0) {
+            return new ArrayList<>();
+        }
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            Type taskListType = new TypeToken<ArrayList<Task>>() {}.getType();
+            List<Task> tasks = gson.fromJson(reader, taskListType);
+            return tasks != null ? tasks : new ArrayList<>();
+        } catch (IOException e) {
+            System.out.println("Error loading tasks from filesystem: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * Saves notes to a JSON file.
+     * @param file the file to save to
+     * @param notes the map of notes to save (UID -> Note)
+     */
+    public static void saveNotes(File file, Map<String, Note> notes) {
+        assert file != null : "File cannot be null when saving notes";
+        assert notes != null : "Notes map cannot be null when saving";
+        
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            gson.toJson(notes, writer);
+        } catch (IOException e) {
+            System.out.println("Error saving notes to filesystem: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Loads notes from a JSON file.
+     * @param file the file to load from
+     * @return the map of notes (UID -> Note)
+     */
+    public static Map<String, Note> loadNotes(File file) {
+        assert file != null : "File cannot be null when loading notes";
+        
+        if (!file.exists() || file.length() == 0) {
+            return new HashMap<>();
+        }
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            Type notesMapType = new TypeToken<HashMap<String, Note>>() {}.getType();
+            Map<String, Note> notes = gson.fromJson(reader, notesMapType);
+            return notes != null ? notes : new HashMap<>();
+        } catch (IOException e) {
+            System.out.println("Error loading notes from filesystem: " + e.getMessage());
+            return new HashMap<>();
         }
     }
 }

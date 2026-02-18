@@ -26,37 +26,35 @@ public class Events extends Task {
     }
 
     /**
-     * Constructor for Events class from a saved state string.
-     * @param loadState
+     * Constructor for JSON deserialization.
      */
-    public static Events loadFromState(String loadState) {
-        assert loadState != null && !loadState.isEmpty() : "Load state string cannot be null or empty";
-        String[] parts = loadState.split("\\|");
-        assert parts.length >= 5 : "Load state string must have at least 5 parts for Events";
-        assert "E".equals(parts[0]) : "Load state string must start with 'E' for Events";
+    private Events() {
+        super("");
+    }
 
-        Events event = new Events(parts[2], LocalDate.parse(parts[3]), LocalDate.parse(parts[4]));
-        if (parts[1].equals("1")) {
-            event.mark();
-        }
-
-        // Load notes from remaining parts
-        for (int i = 5; i < parts.length; i++) {
-            if (!parts[i].trim().isEmpty()) {
-                event.addNote(Note.loadFromState(parts[i]));
-            }
-        }
-
-        return event;
+    /**
+     * Constructor for creating an Event with all fields (used by JSON deserializer).
+     */
+    public Events(String description, boolean isDone, String noteUid, LocalDate from, LocalDate to) {
+        super(description);
+        this.isDone = isDone;
+        this.noteUid = noteUid;
+        this.from = from;
+        this.to = to;
     }
 
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
+        return toString(null);
     }
 
     @Override
-    public String saveState() {
-        return "E|" + super.saveState() + "|" + from.toString() + "|" + to.toString();
+    public String toString(Note note) {
+        return "[E]" + super.toString(note) + " (from: " + from + " to: " + to + ")";
+    }
+
+    @Override
+    public String toFullString(Note note) {
+        return "[E]" + super.toFullString(note) + " (from: " + from + " to: " + to + ")";
     }
 }

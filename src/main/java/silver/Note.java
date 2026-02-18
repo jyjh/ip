@@ -1,20 +1,36 @@
 package silver;
 
+import java.util.UUID;
+
 /**
  * Represents a single note attached to a task.
- * A note contains text content and can be extended with additional properties in the future.
+ * A note contains text content and a unique identifier (UID).
+ * Each note can only be attached to one task at a time.
  */
 public class Note {
+    private String uid;
     private String content;
 
     /**
-     * Constructs a Note with the specified content.
+     * Constructs a Note with the specified content and generates a unique UID.
      * Validates that the content is not empty and is a single line.
      *
      * @param content The content of the note
      * @throws IllegalArgumentException if content is null, empty, or contains newlines
      */
     public Note(String content) {
+        this(null, content);
+    }
+
+    /**
+     * Constructs a Note with the specified UID and content.
+     * Used when loading from saved data.
+     *
+     * @param uid The unique identifier for the note
+     * @param content The content of the note
+     * @throws IllegalArgumentException if content is null, empty, or contains newlines
+     */
+    public Note(String uid, String content) {
         assert content != null : "Note content cannot be null";
         if (content.trim().isEmpty()) {
             throw new IllegalArgumentException("Note content cannot be empty.");
@@ -22,7 +38,17 @@ public class Note {
         if (content.contains("\n")) {
             throw new IllegalArgumentException("Note content must be a single line.");
         }
+        this.uid = uid != null ? uid : UUID.randomUUID().toString();
         this.content = content;
+    }
+
+    /**
+     * Gets the unique identifier (UID) of this note.
+     *
+     * @return The note UID
+     */
+    public String getUid() {
+        return uid;
     }
 
     /**
@@ -37,25 +63,5 @@ public class Note {
     @Override
     public String toString() {
         return content;
-    }
-
-    /**
-     * Returns the save state of this note as a string.
-     *
-     * @return The note content for saving
-     */
-    public String saveState() {
-        return content;
-    }
-
-    /**
-     * Creates a Note from a saved state string.
-     *
-     * @param state The saved state string
-     * @return A new Note object
-     */
-    public static Note loadFromState(String state) {
-        assert state != null && !state.trim().isEmpty() : "Note state cannot be null or empty";
-        return new Note(state);
     }
 }

@@ -52,7 +52,7 @@ public class MainWindow extends AnchorPane implements SilverUI.MessageCallback, 
         chat = new Chat(this);
         ui = new SilverGraphicalUI();
         ui.setMessageCallback(this);
-        silver = new Silver(Silver.DATA_FILEPATH, ui);
+        silver = new Silver(Silver.TASKS_FILEPATH, ui);
         silver.initialize();
 
         // Setup window controls after a short delay to ensure stage is set

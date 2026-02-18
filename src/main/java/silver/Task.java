@@ -1,15 +1,13 @@
 package silver;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Represents a task with a description and completion status.
+ * Can optionally have a single note attached.
  */
 public class Task {
-    private String description;
-    private boolean isDone;
-    private List<Note> notes;
+    protected String description;
+    protected boolean isDone;
+    protected String noteUid;
 
     /**
      * Constructs a Task with the specified description and sets it as not done.
@@ -20,7 +18,7 @@ public class Task {
         assert description != null && !description.trim().isEmpty() : "Task description cannot be null or empty";
         this.description = description;
         this.isDone = false;
-        this.notes = new ArrayList<>();
+        this.noteUid = null;
     }
 
     /**
@@ -46,86 +44,67 @@ public class Task {
     }
 
     /**
-     * Adds a note to this task.
+     * Attaches a note to this task.
+     * Each task can have at most one note.
      *
-     * @param note The note to add
+     * @param noteUid The UID of the note to attach
      */
-    public void addNote(Note note) {
-        assert note != null : "Note cannot be null";
-        notes.add(note);
+    public void setNoteUid(String noteUid) {
+        assert noteUid != null && !noteUid.trim().isEmpty() : "Note UID cannot be null or empty";
+        this.noteUid = noteUid;
     }
 
     /**
-     * Removes a note from this task at the specified index.
-     *
-     * @param index The 1-based index of the note to remove
-     * @return The removed note
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * Removes the note from this task.
      */
-    public Note removeNote(int index) {
-        assert index >= 1 && index <= notes.size() : "Note index must be valid";
-        return notes.remove(index - 1);
+    public void removeNoteUid() {
+        this.noteUid = null;
     }
 
     /**
-     * Gets all notes attached to this task.
+     * Gets the UID of the note attached to this task.
      *
-     * @return A copy of the notes list
+     * @return The note UID, or null if no note is attached
      */
-    public List<Note> getNotes() {
-        return new ArrayList<>(notes);
+    public String getNoteUid() {
+        return noteUid;
     }
 
     /**
-     * Gets the number of notes attached to this task.
+     * Checks if this task has a note attached.
      *
-     * @return The number of notes
+     * @return true if the task has a note, false otherwise
      */
-    public int getNoteCount() {
-        return notes.size();
-    }
-
-    /**
-     * Checks if this task has any notes.
-     *
-     * @return true if the task has notes, false otherwise
-     */
-    public boolean hasNotes() {
-        return !notes.isEmpty();
+    public boolean hasNote() {
+        return noteUid != null;
     }
 
     @Override
     public String toString() {
-        String noteCountStr = hasNotes() ? " (" + getNoteCount() + " note" + (getNoteCount() > 1 ? "s" : "") + ")" : "";
-        return "[" + getStatusIcon() + "] " + description + noteCountStr;
+        return toString(null);
     }
 
     /**
-     * Returns a full string representation of this task including all notes.
+     * Returns a string representation of this task.
      *
+     * @param note The note attached to this task (can be null)
+     * @return The string representation
+     */
+    public String toString(Note note) {
+        String noteIndicator = hasNote() ? " (1 note)" : "";
+        return "[" + getStatusIcon() + "] " + description + noteIndicator;
+    }
+
+    /**
+     * Returns a full string representation of this task including the note if present.
+     *
+     * @param note The note attached to this task (can be null)
      * @return The full string representation
      */
-    public String toFullString() {
-        StringBuilder sb = new StringBuilder(toString());
-        if (hasNotes()) {
-            sb.append("\n");
-            for (int i = 0; i < notes.size(); i++) {
-                sb.append("  ").append(i + 1).append(". ").append(notes.get(i).toString()).append("\n");
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Returns the current state of the task as a string, to be loaded later via loadFromSave.
-     * @return saveState string
-     */
-    public String saveState() {
-        assert description != null : "Description must not be null when saving state";
-        StringBuilder sb = new StringBuilder();
-        sb.append((isDone ? "1" : "0")).append("|").append(description);
-        for (Note note : notes) {
-            sb.append("|").append(note.saveState());
+    public String toFullString(Note note) {
+        StringBuilder sb = new StringBuilder(toString(note));
+        if (hasNote() && note != null) {
+            sb.append("\n").append("  1. ").append(note.toString());
         }
         return sb.toString();
     }

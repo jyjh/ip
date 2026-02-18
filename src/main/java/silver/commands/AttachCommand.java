@@ -7,6 +7,7 @@ import silver.TaskList;
 
 /**
  * Command to attach a note to a task.
+ * Each task can have at most one note.
  */
 public class AttachCommand extends Command {
     public AttachCommand(String[] args) {
@@ -57,9 +58,20 @@ public class AttachCommand extends Command {
             }
 
             try {
+                // Create note and add to task list
                 Note note = new Note(noteText);
+                String noteUid = tasks.addNote(note);
+                
+                // Attach note to task
                 Task task = tasks.get(taskIndex - 1);
-                task.addNote(note);
+                
+                // If task already has a note, remove the old one first
+                if (task.hasNote()) {
+                    String oldNoteUid = task.getNoteUid();
+                    tasks.removeNote(oldNoteUid);
+                }
+                
+                task.setNoteUid(noteUid);
                 ui.printResponseMessage("Attached note to task " + taskIndex + ": \"" + noteText + "\"");
             } catch (IllegalArgumentException e) {
                 ui.printResponseMessage("Error adding note: " + e.getMessage());

@@ -1,10 +1,12 @@
 package silver.commands;
 
+import silver.Note;
 import silver.SilverUI;
+import silver.Task;
 import silver.TaskList;
 
 /**
- * Command to list all tasks in the task list.
+ * Command to list all tasks in task list.
  */
 public class ListCommand extends Command {
     private boolean showFull;
@@ -42,7 +44,9 @@ public class ListCommand extends Command {
             // Show tasks with full notes
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < tasks.size(); i++) {
-                sb.append((i + 1)).append(". ").append(tasks.get(i).toFullString()).append("\n");
+                Task task = tasks.get(i);
+                Note note = task.hasNote() ? tasks.getNote(task.getNoteUid()) : null;
+                sb.append((i + 1)).append(". ").append(task.toFullString(note)).append("\n");
             }
             ui.printDivider();
             ui.printResponseMessage(sb.toString());
