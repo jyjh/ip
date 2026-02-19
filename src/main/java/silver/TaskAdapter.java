@@ -32,10 +32,10 @@ public class TaskAdapter implements JsonSerializer<Task>, JsonDeserializer<Task>
         
         // Add type-specific fields
         if (task instanceof Deadline) {
-            jsonObject.addProperty("by", ((Deadline) task).by.toString());
+            jsonObject.add("by", context.serialize(((Deadline) task).by));
         } else if (task instanceof Events) {
-            jsonObject.addProperty("from", ((Events) task).from.toString());
-            jsonObject.addProperty("to", ((Events) task).to.toString());
+            jsonObject.add("from", context.serialize(((Events) task).from));
+            jsonObject.add("to", context.serialize(((Events) task).to));
         }
         
         return jsonObject;

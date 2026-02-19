@@ -8,7 +8,7 @@ import java.time.LocalDate;
  */
 public class Deadline extends Task {
 
-    protected LocalDate by;
+    LocalDate by;
 
     /**
      * Constructor for Deadline class.
@@ -39,17 +39,22 @@ public class Deadline extends Task {
     }
 
     @Override
+    public String getTaskIcon() {
+        return "D";
+    }
+
+    @Override
     public String toString() {
         return toString(null);
     }
 
     @Override
     public String toString(Note note) {
-        return "[D]" + super.toString(note) + " (by: " + by + ")";
+        return super.toString(note) + " (by: " + by + ")";
     }
 
     @Override
     public String toFullString(Note note) {
-        return "[D]" + super.toFullString(note) + " (by: " + by + ")";
+        return super.toFullString(note) + " (by: " + by + ")";
     }
 }

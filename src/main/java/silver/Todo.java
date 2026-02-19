@@ -26,17 +26,22 @@ public class Todo extends Task {
     }
 
     @Override
+    public String getTaskIcon() {
+        return "T";
+    }
+
+    @Override
     public String toString() {
         return toString(null);
     }
 
     @Override
     public String toString(Note note) {
-        return "[T]" + super.toString(note);
+        return super.toString(note);
     }
 
     @Override
     public String toFullString(Note note) {
-        return "[T]" + super.toFullString(note);
+        return super.toFullString(note);
     }
 }

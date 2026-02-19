@@ -25,6 +25,7 @@ public class Filesystem {
     private static final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(Task.class, new TaskAdapter())
+            .registerTypeAdapter(java.time.LocalDate.class, new LocalDateAdapter())
             .create();
 
     /**
@@ -74,8 +75,9 @@ public class Filesystem {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             Type taskListType = new TypeToken<ArrayList<Task>>() {}.getType();
             gson.toJson(tasks, taskListType, writer);
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Error saving tasks to filesystem: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

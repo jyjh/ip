@@ -24,7 +24,7 @@ public class ListCommand extends Command {
     @Override
     public void validateInput() throws IllegalArgumentException {
         // Check for -full flag
-        if (args.length > 1 && args[1].equals("-full")) {
+        if (args.length > 1 && args[1].contains("-full")) {
             showFull = true;
         }
         // Any other arguments are invalid
@@ -35,6 +35,13 @@ public class ListCommand extends Command {
 
     @Override
     public void execute(TaskList tasks, SilverUI ui) {
+        try {
+            validateInput();
+        } catch (IllegalArgumentException e) {
+            ui.printResponseMessage(e.getMessage());
+            return;
+        }
+        
         if (tasks.size() == 0) {
             ui.printResponseMessage("Your task list is empty.");
             return;

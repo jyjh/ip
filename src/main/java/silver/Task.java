@@ -79,6 +79,10 @@ public class Task {
         return noteUid != null;
     }
 
+    public String getTaskIcon() {
+        return "";
+    }
+
     @Override
     public String toString() {
         return toString(null);
@@ -92,7 +96,7 @@ public class Task {
      */
     public String toString(Note note) {
         String noteIndicator = hasNote() ? " (1 note)" : "";
-        return "[" + getStatusIcon() + "] " + description + noteIndicator;
+        return "[" + this.getTaskIcon() + "]" + "[" + getStatusIcon() + "] " + description + noteIndicator;
     }
 
     /**

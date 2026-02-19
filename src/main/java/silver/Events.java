@@ -8,8 +8,9 @@ import java.time.LocalDate;
  */
 public class Events extends Task {
 
-    protected LocalDate from;
-    protected LocalDate to;
+
+    LocalDate from;
+    LocalDate to;
 
     /**
      * Constructor for Events class.
@@ -44,17 +45,22 @@ public class Events extends Task {
     }
 
     @Override
+    public String getTaskIcon() {
+        return "E";
+    }
+
+    @Override
     public String toString() {
         return toString(null);
     }
 
     @Override
     public String toString(Note note) {
-        return "[E]" + super.toString(note) + " (from: " + from + " to: " + to + ")";
+        return super.toString(note) + " (from: " + from + " to: " + to + ")";
     }
 
     @Override
     public String toFullString(Note note) {
-        return "[E]" + super.toFullString(note) + " (from: " + from + " to: " + to + ")";
+        return super.toFullString(note) + " (from: " + from + " to: " + to + ")";
     }
 }
