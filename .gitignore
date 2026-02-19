@@ -22,5 +22,3 @@ text-ui-test/EXPECTED-UNIX.TXT
 # Other files
 *.class
 /data/
-config/checkstyle/checkstyle.xml
-config/checkstyle/suppressions.xml
