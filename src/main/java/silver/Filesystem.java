@@ -1,21 +1,21 @@
 package silver;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Provides utility methods for file operations using JSON format.
@@ -71,7 +71,7 @@ public class Filesystem {
     public static void saveTasks(File file, List<Task> tasks) {
         assert file != null : "File cannot be null when saving tasks";
         assert tasks != null : "Task list cannot be null when saving";
-        
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             Type taskListType = new TypeToken<ArrayList<Task>>() {}.getType();
             gson.toJson(tasks, taskListType, writer);
@@ -88,11 +88,11 @@ public class Filesystem {
      */
     public static List<Task> loadTasks(File file) {
         assert file != null : "File cannot be null when loading tasks";
-        
+
         if (!file.exists() || file.length() == 0) {
             return new ArrayList<>();
         }
-        
+
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             Type taskListType = new TypeToken<ArrayList<Task>>() {}.getType();
             List<Task> tasks = gson.fromJson(reader, taskListType);
@@ -111,7 +111,7 @@ public class Filesystem {
     public static void saveNotes(File file, Map<String, Note> notes) {
         assert file != null : "File cannot be null when saving notes";
         assert notes != null : "Notes map cannot be null when saving";
-        
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             gson.toJson(notes, writer);
         } catch (IOException e) {
@@ -126,11 +126,11 @@ public class Filesystem {
      */
     public static Map<String, Note> loadNotes(File file) {
         assert file != null : "File cannot be null when loading notes";
-        
+
         if (!file.exists() || file.length() == 0) {
             return new HashMap<>();
         }
-        
+
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             Type notesMapType = new TypeToken<HashMap<String, Note>>() {}.getType();
             Map<String, Note> notes = gson.fromJson(reader, notesMapType);

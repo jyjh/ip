@@ -38,7 +38,8 @@ public class AttachCommand extends Command {
         try {
             int taskIndex = Integer.parseInt(args[1]);
             if (taskIndex < 1 || taskIndex > tasks.size()) {
-                ui.printResponseMessage("Invalid task index. Please provide a number between 1 and " + tasks.size() + ".");
+                ui.printResponseMessage("Invalid task index. Please provide a number between 1 and "
+                    + tasks.size() + ".");
                 return;
             }
 
@@ -61,16 +62,13 @@ public class AttachCommand extends Command {
                 // Create note and add to task list
                 Note note = new Note(noteText);
                 String noteUid = tasks.addNote(note);
-                
                 // Attach note to task
                 Task task = tasks.get(taskIndex - 1);
-                
                 // If task already has a note, remove the old one first
                 if (task.hasNote()) {
                     String oldNoteUid = task.getNoteUid();
                     tasks.removeNote(oldNoteUid);
                 }
-                
                 task.setNoteUid(noteUid);
                 ui.printResponseMessage("Attached note to task " + taskIndex + ": \"" + noteText + "\"");
             } catch (IllegalArgumentException e) {

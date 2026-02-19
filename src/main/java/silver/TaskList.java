@@ -33,12 +33,12 @@ public class TaskList {
     public Task remove(int index) {
         assert index >= 0 && index < tasks.size() : "Index must be within bounds of task list";
         Task removed = tasks.get(index);
-        
+
         // Remove associated note if exists
         if (removed.hasNote()) {
             notes.remove(removed.getNoteUid());
         }
-        
+
         tasks.remove(index);
         return removed;
     }
@@ -119,6 +119,10 @@ public class TaskList {
         return foundTasks;
     }
 
+    /**
+     * Returns a string representation of all tasks in the list, with their associated notes if they have any.
+     * @return
+     */
     public String listTasks() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < tasks.size(); i++) {

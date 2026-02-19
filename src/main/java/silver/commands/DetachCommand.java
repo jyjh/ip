@@ -37,7 +37,8 @@ public class DetachCommand extends Command {
         try {
             int taskIndex = Integer.parseInt(args[1]);
             if (taskIndex < 1 || taskIndex > tasks.size()) {
-                ui.printResponseMessage("Invalid task index. Please provide a number between 1 and " + tasks.size() + ".");
+                ui.printResponseMessage("Invalid task index. Please provide a number between 1 and "
+                    + tasks.size() + ".");
                 return;
             }
 

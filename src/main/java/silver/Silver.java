@@ -1,12 +1,14 @@
 package silver;
 
+import java.util.List;
+import java.util.Map;
+
 import silver.commands.ByeCommand;
 import silver.commands.Command;
 import silver.input.Input;
 import silver.input.TerminalInput;
 
-import java.util.List;
-import java.util.Map;
+
 
 /**
  * This is the main class for the Silver task management application.
@@ -44,19 +46,15 @@ public class Silver {
         Filesystem.initializeFile(NOTES_FILEPATH);
         Map<String, Note> loadedNotes = Filesystem.loadNotes(
             Filesystem.initializeFile(NOTES_FILEPATH));
-        
         // Load tasks second
         Filesystem.initializeFile(TASKS_FILEPATH);
         List<Task> loadedTasks = Filesystem.loadTasks(
             Filesystem.initializeFile(TASKS_FILEPATH));
-        
         // Set the data in TaskList
         tasks.setTasks(loadedTasks);
         tasks.setNotes(loadedNotes);
-        
         // Validate task-note references and warn about broken ones
         validateTaskNoteReferences();
-        
         ui.printResponseMessage("Loaded " + tasks.size() + " tasks from previous session.");
         ui.printResponseMessage("What can I do for you today?");
     }
@@ -71,9 +69,9 @@ public class Silver {
             if (task.hasNote()) {
                 String noteUid = task.getNoteUid();
                 if (!notes.containsKey(noteUid)) {
-                    System.out.println("Warning: Task '" + task.getDescription() + 
-                        "' references non-existent note UID " + noteUid + 
-                        ". Removing note reference.");
+                    System.out.println("Warning: Task '" + task.getDescription()
+                        + "' references non-existent note UID " + noteUid
+                        + ". Removing note reference.");
                     task.removeNoteUid();
                 }
             }

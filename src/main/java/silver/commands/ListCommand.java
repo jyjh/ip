@@ -11,6 +11,10 @@ import silver.TaskList;
 public class ListCommand extends Command {
     private boolean showFull;
 
+    /**
+     * Constructor for ListCommand.
+     * @param args
+     */
     public ListCommand(String[] args) {
         super(args);
         this.showFull = false;
@@ -41,7 +45,7 @@ public class ListCommand extends Command {
             ui.printResponseMessage(e.getMessage());
             return;
         }
-        
+
         if (tasks.size() == 0) {
             ui.printResponseMessage("Your task list is empty.");
             return;
