@@ -34,7 +34,7 @@ The entire transition from TUI to GUI was AI powered. This included
 - Having the app be toggleable between terminal output and gui from an argument.
 
 
-## Week 5
+## Week 5 onwards
 
 Continuing with using fully AI generated code, the following refactors to my code were done.
 
@@ -45,5 +45,9 @@ Continuing with using fully AI generated code, the following refactors to my cod
 - Created a HelpCommand that also uses the CommandRegistry to automatically create a help command from all the usage strings of each command class.
 - Created a custom WindowHandler class to handling moving window and resizing it, so that system decorations could be replaced with a custom implementation for aesthetic appeal.
 - Created message grouping functionality, so consecutive messages from the same user (just the bot for now) would be more tightly grouped together for visual clarity.
+- Switched filesystem storage to use gson library.
+- Added ability to attach notes to tasks.
 
-The only human intervention was to verify that the generated code was accurate and to prompt the AI. This includes prompting the AI to refine it's own code further - such as reducing code duplication via creating new functions, or to fix it's own bugs.
+The only human intervention was to verify that the generated code was accurate and to prompt the AI. This includes prompting the AI to refine it's own code further - such as reducing code duplication via creating new functions, or to fix it's own bugs. As per the ip.ai task, hand-coding was kept to an absolute minimum.
+
+It can be assumed that _every_ part of the code has been modified by generative AI in some way at some point.
