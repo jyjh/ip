@@ -1,10 +1,13 @@
 package silver;
+
 /**
  * Represents a task with a description and completion status.
+ * Can optionally have a single note attached.
  */
 public class Task {
-    private String description;
-    private boolean isDone;
+    protected String description;
+    protected boolean isDone;
+    protected String noteUid;
 
     /**
      * Constructs a Task with the specified description and sets it as not done.
@@ -15,6 +18,7 @@ public class Task {
         assert description != null && !description.trim().isEmpty() : "Task description cannot be null or empty";
         this.description = description;
         this.isDone = false;
+        this.noteUid = null;
     }
 
     /**
@@ -39,17 +43,69 @@ public class Task {
         return description;
     }
 
-    @Override
-    public String toString() {
-        return "[" + getStatusIcon() + "] " + description;
+    /**
+     * Attaches a note to this task.
+     * Each task can have at most one note.
+     *
+     * @param noteUid The UID of the note to attach
+     */
+    public void setNoteUid(String noteUid) {
+        assert noteUid != null && !noteUid.trim().isEmpty() : "Note UID cannot be null or empty";
+        this.noteUid = noteUid;
     }
 
     /**
-     * Returns the current state of the task as a string, to be loaded later via loadFromSave.
-     * @return saveState string
+     * Removes the note from this task.
      */
-    public String saveState() {
-        assert description != null : "Description must not be null when saving state";
-        return (isDone ? "1" : "0") + "|" + description;
+    public void removeNoteUid() {
+        this.noteUid = null;
+    }
+
+    /**
+     * Gets the UID of the note attached to this task.
+     *
+     * @return The note UID, or null if no note is attached
+     */
+    public String getNoteUid() {
+        return noteUid;
+    }
+
+    /**
+     * Checks if this task has a note attached.
+     *
+     * @return true if the task has a note, false otherwise
+     */
+    public boolean hasNote() {
+        return noteUid != null;
+    }
+
+    @Override
+    public String toString() {
+        return toString(null);
+    }
+
+    /**
+     * Returns a string representation of this task.
+     *
+     * @param note The note attached to this task (can be null)
+     * @return The string representation
+     */
+    public String toString(Note note) {
+        String noteIndicator = hasNote() ? " (1 note)" : "";
+        return "[" + getStatusIcon() + "] " + description + noteIndicator;
+    }
+
+    /**
+     * Returns a full string representation of this task including the note if present.
+     *
+     * @param note The note attached to this task (can be null)
+     * @return The full string representation
+     */
+    public String toFullString(Note note) {
+        StringBuilder sb = new StringBuilder(toString(note));
+        if (hasNote() && note != null) {
+            sb.append("\n").append("  1. ").append(note.toString());
+        }
+        return sb.toString();
     }
 }

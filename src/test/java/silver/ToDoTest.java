@@ -14,19 +14,18 @@ public class TodoTest {
     }
 
     @Test
-    public void testSaveLoad() {
+    public void testNoteFunctionality() {
         Todo todo = new Todo("Write unit tests");
-        String savedState = todo.saveState();
-        assertEquals("T|0|Write unit tests", savedState);
+        Note note = new Note("Important task");
 
-        Todo loadedTodo = Todo.loadFromState(savedState);
-        assertEquals("[T][ ] Write unit tests", loadedTodo.toString());
+        // Test attaching note
+        todo.setNoteUid(note.getUid());
+        assertEquals(note.getUid(), todo.getNoteUid());
+        assertEquals("[T][ ] Write unit tests (1 note)", todo.toString(note));
 
-        todo.mark();
-        savedState = todo.saveState();
-        assertEquals("T|1|Write unit tests", savedState);
-
-        loadedTodo = Todo.loadFromState(savedState);
-        assertEquals("[T][X] Write unit tests", loadedTodo.toString());
+        // Test detaching note
+        todo.removeNoteUid();
+        assertEquals(null, todo.getNoteUid());
+        assertEquals("[T][ ] Write unit tests", todo.toString(note));
     }
 }

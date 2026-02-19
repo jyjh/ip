@@ -1,14 +1,15 @@
 package silver;
+
 import java.time.LocalDate;
 
 /**
  * Represents a task with a start and end time.
- * Extends the Task class to include a "from" and "to" date/time.
+ * Extends the Task class to include "from" and "to" date/times.
  */
 public class Events extends Task {
 
-    private LocalDate from;
-    private LocalDate to;
+    protected LocalDate from;
+    protected LocalDate to;
 
     /**
      * Constructor for Events class.
@@ -18,37 +19,42 @@ public class Events extends Task {
      */
     public Events(String description, LocalDate from, LocalDate to) {
         super(description);
-        assert from != null : "Event start date cannot be null";
-        assert to != null : "Event end date cannot be null";
-        assert !from.isAfter(to) : "Event start date cannot be after end date";
+        assert from != null : "Event 'from' date cannot be null";
+        assert to != null : "Event 'to' date cannot be null";
         this.from = from;
         this.to = to;
     }
 
     /**
-     * Constructor for Events class from a saved state string.
-     * @param loadState
+     * Constructor for JSON deserialization.
      */
-    public static Events loadFromState(String loadState) {
-        assert loadState != null && !loadState.isEmpty() : "Load state string cannot be null or empty";
-        String[] parts = loadState.split("\\|", 5);
-        assert parts.length >= 5 : "Load state string must have at least 5 parts for Events";
-        assert "E".equals(parts[0]) : "Load state string must start with 'E' for Events";
-        
-        Events events = new Events(parts[2], LocalDate.parse(parts[3]), LocalDate.parse(parts[4]));
-        if (parts[1].equals("1")) {
-            events.mark();
-        }
-        return events;
+    private Events() {
+        super("");
+    }
+
+    /**
+     * Constructor for creating an Event with all fields (used by JSON deserializer).
+     */
+    public Events(String description, boolean isDone, String noteUid, LocalDate from, LocalDate to) {
+        super(description);
+        this.isDone = isDone;
+        this.noteUid = noteUid;
+        this.from = from;
+        this.to = to;
     }
 
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
+        return toString(null);
     }
 
     @Override
-    public String saveState() {
-        return "E|" + super.saveState() + "|" + from + "|" + to;
+    public String toString(Note note) {
+        return "[E]" + super.toString(note) + " (from: " + from + " to: " + to + ")";
+    }
+
+    @Override
+    public String toFullString(Note note) {
+        return "[E]" + super.toFullString(note) + " (from: " + from + " to: " + to + ")";
     }
 }

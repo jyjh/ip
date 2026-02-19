@@ -1,4 +1,5 @@
 package silver;
+
 import java.time.LocalDate;
 
 /**
@@ -21,29 +22,34 @@ public class Deadline extends Task {
     }
 
     /**
-     * Constructor for Deadline class from a saved state string.
-     * @param loadState
+     * Constructor for JSON deserialization.
      */
-    public static Deadline loadFromState(String loadState) {
-        assert loadState != null && !loadState.isEmpty() : "Load state string cannot be null or empty";
-        String[] parts = loadState.split("\\|", 4);
-        assert parts.length >= 4 : "Load state string must have at least 4 parts for Deadline";
-        assert "D".equals(parts[0]) : "Load state string must start with 'D' for Deadline";
-        
-        Deadline deadline = new Deadline(parts[2], LocalDate.parse(parts[3]));
-        if (parts[1].equals("1")) {
-            deadline.mark();
-        }
-        return deadline;
+    private Deadline() {
+        super("");
+    }
+
+    /**
+     * Constructor for creating a Deadline with all fields (used by JSON deserializer).
+     */
+    public Deadline(String description, boolean isDone, String noteUid, LocalDate by) {
+        super(description);
+        this.isDone = isDone;
+        this.noteUid = noteUid;
+        this.by = by;
     }
 
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by + ")";
+        return toString(null);
     }
 
     @Override
-    public String saveState() {
-        return "D|" + super.saveState() + "|" + by.toString();
+    public String toString(Note note) {
+        return "[D]" + super.toString(note) + " (by: " + by + ")";
+    }
+
+    @Override
+    public String toFullString(Note note) {
+        return "[D]" + super.toFullString(note) + " (by: " + by + ")";
     }
 }

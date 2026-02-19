@@ -12,7 +12,7 @@ public class Launcher {
         if (args.length > 0 && args[0].equals("--terminal")) {
             // Terminal mode
             SilverTerminalUI terminalUI = new SilverTerminalUI();
-            Silver silver = new Silver(Silver.DATA_FILEPATH, terminalUI);
+            Silver silver = new Silver(Silver.TASKS_FILEPATH, terminalUI);
             silver.run();
         } else {
             // GUI mode (default)

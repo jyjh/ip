@@ -21,9 +21,24 @@ public class FindCommand extends Command {
         if (args.length < 2) {
             throw new IllegalArgumentException("Invalid format. Usage: " + getUsage());
         }
-        if (args[1].isEmpty()) {
+        String keyword = joinArguments(1, args.length);
+        if (keyword.isEmpty()) {
             throw new IllegalArgumentException("Keyword cannot be empty.");
         }
+    }
+
+    /**
+     * Joins array elements from startIndex to endIndex with spaces.
+     */
+    private String joinArguments(int startIndex, int endIndex) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = startIndex; i < endIndex; i++) {
+            if (i > startIndex) {
+                sb.append(" ");
+            }
+            sb.append(args[i]);
+        }
+        return sb.toString();
     }
 
     @Override
@@ -37,7 +52,7 @@ public class FindCommand extends Command {
             return;
         }
 
-        String keyword = args[1];
+        String keyword = joinArguments(1, args.length);
         TaskList foundTasks = tasks.findTasks(keyword);
         assert foundTasks != null : "Found tasks list cannot be null";
         if (foundTasks.size() == 0) {

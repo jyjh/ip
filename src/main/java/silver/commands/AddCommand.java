@@ -21,29 +21,40 @@ public class AddCommand extends Command {
         return "add";
     }
 
+    /**
+     * Joins array elements from startIndex to endIndex with spaces.
+     */
+    private String joinArguments(int startIndex, int endIndex) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = startIndex; i < endIndex; i++) {
+            if (i > startIndex) {
+                sb.append(" ");
+            }
+            sb.append(args[i]);
+        }
+        return sb.toString();
+    }
+
     @Override
     public void validateInput() throws IllegalArgumentException {
         if (args.length < 3) {
             throw new IllegalArgumentException("Invalid format. Usage: " + getUsage());
         }
         String taskType = args[1].toLowerCase();
-        String desc = args[2];
-
-        if (desc.isEmpty()) {
-            throw new IllegalArgumentException("Task description cannot be empty.");
-        }
 
         switch (taskType) {
         case "todo":
-            // No additional validation needed for todo
+            if (args.length < 3) {
+                throw new IllegalArgumentException("Invalid format. Usage: "
+                    + getKeyword() + " todo [description]");
+            }
             break;
         case "deadline":
             if (args.length < 4) {
                 throw new IllegalArgumentException("Invalid format. Usage: "
-                    + getKeyword()
-                    + " deadline [description] [due-date]");
+                    + getKeyword() + " deadline [description] [due-date]");
             }
-            String by = args[3];
+            String by = args[args.length - 1];
             if (by.isEmpty()) {
                 throw new IllegalArgumentException("Deadline 'by' field cannot be empty.");
             }
@@ -53,8 +64,8 @@ public class AddCommand extends Command {
                 throw new IllegalArgumentException("Invalid format. Usage: " + getKeyword() + " event [description] "
                     + "[from-date] [to-date]");
             }
-            String from = args[3];
-            String to = args[4];
+            String to = args[args.length - 1];
+            String from = args[args.length - 2];
             if (from.isEmpty()) {
                 throw new IllegalArgumentException("Event 'from' field cannot be empty.");
             }
@@ -77,21 +88,36 @@ public class AddCommand extends Command {
         }
 
         String taskType = args[1].toLowerCase();
-        String desc = args[2];
+        String desc;
 
         try {
             switch (taskType) {
             case "todo":
+                desc = joinArguments(2, args.length);
+                if (desc.isEmpty()) {
+                    ui.printResponseMessage("Task description cannot be empty.");
+                    return;
+                }
                 tasks.add(new Todo(desc));
                 break;
             case "deadline":
-                String by = args[3];
+                desc = joinArguments(2, args.length - 1);
+                if (desc.isEmpty()) {
+                    ui.printResponseMessage("Task description cannot be empty.");
+                    return;
+                }
+                String by = args[args.length - 1];
                 LocalDate byDate = LocalDate.parse(by);
                 tasks.add(new Deadline(desc, byDate));
                 break;
             case "event":
-                String from = args[3];
-                String to = args[4];
+                desc = joinArguments(2, args.length - 2);
+                if (desc.isEmpty()) {
+                    ui.printResponseMessage("Task description cannot be empty.");
+                    return;
+                }
+                String from = args[args.length - 2];
+                String to = args[args.length - 1];
                 LocalDate toDate = LocalDate.parse(to);
                 LocalDate fromDate = LocalDate.parse(from);
                 tasks.add(new Events(desc, fromDate, toDate));
