@@ -2,6 +2,7 @@ package silver;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -15,6 +16,8 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -98,8 +101,13 @@ public class Filesystem {
             List<Task> tasks = gson.fromJson(reader, taskListType);
             return tasks != null ? tasks : new ArrayList<>();
         } catch (IOException e) {
-            System.out.println("Error loading tasks from filesystem: " + e.getMessage());
-            return new ArrayList<>();
+            System.out.println("Error parsing tasks JSON: " + e.getMessage());
+            handleCorruptedFile(file);
+            return loadTasks(file);
+        } catch (JsonSyntaxException e) {
+            System.out.println("Error parsing tasks JSON syntax: " + e.getMessage());
+            handleCorruptedFile(file);
+            return loadTasks(file);
         }
     }
 
@@ -138,6 +146,34 @@ public class Filesystem {
         } catch (IOException e) {
             System.out.println("Error loading notes from filesystem: " + e.getMessage());
             return new HashMap<>();
+        } catch (JsonIOException e) {
+            System.out.println("Error parsing notes JSON: " + e.getMessage());
+            return new HashMap<>();
+        } catch (JsonSyntaxException e) {
+            System.out.println("Error parsing notes JSON syntax: " + e.getMessage());
+            handleCorruptedFile(file);
+            return loadNotes(file);
+        } 
+    }
+
+    /**
+     * Handles a corrupted file by printing a warning, appending '-old' to the file name,
+     * and creating a new blank file with the original name.
+     * @param file
+     */
+    public static void handleCorruptedFile(File file) {
+        System.out.println("Warning: Detected corrupted file at " + file.getPath() + ".");
+        String newName = file.getPath() + "-old";
+        File backupFile = new File(newName);
+        if (backupFile.exists()) {
+            System.out.println("Warning: Backup file " + newName + " already exists. Overwriting it.");
+            backupFile.delete();
+        }
+        file.renameTo(backupFile);
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            System.out.println("Error creating new file: " + e.getMessage());
         }
     }
 }

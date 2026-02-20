@@ -69,7 +69,7 @@ public class Silver {
             if (task.hasNote()) {
                 String noteUid = task.getNoteUid();
                 if (!notes.containsKey(noteUid)) {
-                    System.out.println("Warning: Task '" + task.getDescription()
+                    ui.printResponseMessage("Warning: Task '" + task.getDescription()
                         + "' references non-existent note UID " + noteUid
                         + ". Removing note reference.");
                     task.removeNoteUid();
