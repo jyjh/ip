@@ -140,6 +140,7 @@ public class AddCommand extends Command {
         return getKeyword() + " todo/deadline/event [description] [additional args]\n"
             + "  - todo: " + getKeyword() + " todo [description]\n"
             + "  - deadline: " + getKeyword() + " deadline [description] [due-date]\n"
-            + "  - event: " + getKeyword() + " event [description] [from-date] [to-date]";
+            + "  - event: " + getKeyword() + " event [description] [from-date] [to-date]"
+            + " (Use ISO date format: YYYY-MM-DD)";
     }
 }

@@ -28,7 +28,7 @@ From here onwards, I have changed AI models and usage.
 I am now using GLM 4.7, from Z.ai's coding lite plan. I am combining this with Cline for VSCode.
 I am also no longer writing any code beyond the bare minimum / bug fixes. _Everything_ is AI generated from now.
 
-The entire transition from TUI to GUI was AI powered. This included
+The entire transition from CLI to GUI was AI powered. This included
 - Generating the GUI elements.
 - Changing the parser to use String input instead of scanner directly.
 - Having the app be toggleable between terminal output and gui from an argument.
