@@ -51,3 +51,6 @@ Continuing with using fully AI generated code, the following refactors to my cod
 The only human intervention was to verify that the generated code was accurate and to prompt the AI. This includes prompting the AI to refine it's own code further - such as reducing code duplication via creating new functions, or to fix it's own bugs. As per the ip.ai task, hand-coding was kept to an absolute minimum.
 
 It can be assumed that _every_ part of the code has been modified by generative AI in some way at some point.
+
+
+user.png and silver.png are taken from flaticon.com

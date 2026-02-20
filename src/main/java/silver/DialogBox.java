@@ -82,7 +82,7 @@ public class DialogBox extends HBox {
             // Show avatar, all corners rounded, normal spacing
             displayPicture.setVisible(true);
             displayPicture.setOpacity(1.0);
-            setPadding(new Insets(10.0, 10.0, 10.0, 10.0));
+            setPadding(new Insets(10.0, 5.0, 10.0, 5.0));
             dialog.setStyle("-fx-background-color: #182533; -fx-background-radius: 10; "
                 + "-fx-text-fill: white; -fx-wrap-text: true; -fx-padding: 10 15 10 15;");
             break;
@@ -90,7 +90,7 @@ public class DialogBox extends HBox {
             // Show avatar, bottom corners squared, reduced bottom spacing
             displayPicture.setVisible(true);
             displayPicture.setOpacity(1.0);
-            setPadding(new Insets(10.0, 10.0, 2.0, 10.0));
+            setPadding(new Insets(10.0, 5.0, 2.0, 5.0));
             dialog.setStyle("-fx-background-color: #182533; -fx-background-radius: 10 10 2 2; "
                 + "-fx-text-fill: white; -fx-wrap-text: true; -fx-padding: 10 15 10 15;");
             break;
@@ -98,7 +98,7 @@ public class DialogBox extends HBox {
             // Hide avatar (but keep it in layout for alignment), no rounded corners, reduced spacing
             displayPicture.setVisible(true);
             displayPicture.setOpacity(0.0);
-            setPadding(new Insets(2.0, 10.0, 2.0, 10.0));
+            setPadding(new Insets(2.0, 5.0, 2.0, 5.0));
             dialog.setStyle("-fx-background-color: #182533; -fx-background-radius: 0; "
                 + "-fx-text-fill: white; -fx-wrap-text: true; -fx-padding: 10 15 10 15;");
             break;
@@ -106,7 +106,7 @@ public class DialogBox extends HBox {
             // Hide avatar (but keep it in layout for alignment), top corners squared, reduced top spacing
             displayPicture.setVisible(true);
             displayPicture.setOpacity(0.0);
-            setPadding(new Insets(2.0, 10.0, 10.0, 10.0));
+            setPadding(new Insets(2.0, 5.0, 10.0, 5.0));
             dialog.setStyle("-fx-background-color: #182533; -fx-background-radius: 2 2 10 10; "
                 + "-fx-text-fill: white; -fx-wrap-text: true; -fx-padding: 10 15 10 15;");
             break;
